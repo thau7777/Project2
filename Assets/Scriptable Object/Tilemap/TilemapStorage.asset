@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fbbbca5cff64ef4484a3e595c44ed11, type: 3}
+  m_Name: TilemapStorage
+  m_EditorClassIdentifier: 
+  tilemapLists:
+  - name: GameplayScene
+    tilemaps:
+    - {fileID: 3096896426818700689, guid: 9eb53eb280d69da48a4f6883c8321471, type: 3}
+    - {fileID: 6094241008962250202, guid: 57ef1767aca043d47a142672936d6fe4, type: 3}
+    - {fileID: 9111606563782251726, guid: 130577277d5cb554bacd17a37afb6126, type: 3}
+    - {fileID: 741419083630274413, guid: a24b1e6ea1bbb8048ab417c20f44f95a, type: 3}
+    - {fileID: 6474455846099095451, guid: 3e7eb26198626ca45a259f3cbc07d563, type: 3}
+    - {fileID: 2696993021961975355, guid: d8f9d5285621a7c46b67e5e556841b7f, type: 3}
+    - {fileID: 4999715635343888688, guid: 172cc9dcd7987284b90043def85c9167, type: 3}
+    - {fileID: 7994474515805963286, guid: 6ee56820ff7d2f84e95b1b22e503715d, type: 3}
+    - {fileID: 5248117005754601090, guid: 62471ba4e261124489cf5342c4666b06, type: 3}

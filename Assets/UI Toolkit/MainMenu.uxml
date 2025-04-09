@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1; color: rgb(0, 0, 0); background-color: rgba(0, 0, 0, 0);">
+        <ui:VisualElement style="flex-grow: 1; justify-content: center; width: 100%; height: 40%;">
+            <ui:Label tabindex="-1" text="Miracle Farm" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-font: url(&quot;project://database/Assets/Fonts/Jersey10-Regular.ttf?fileID=12800000&amp;guid=e2131143879406447bc4171be4019b36&amp;type=3#Jersey10-Regular&quot;); -unity-font-style: normal; display: flex; visibility: visible; overflow: visible; -unity-text-align: upper-right; text-overflow: clip; font-size: 200px; color: rgb(255, 255, 255); -unity-text-outline-color: rgba(0, 0, 0, 0); background-color: rgba(255, 255, 255, 0.49);" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; width: 100%; height: 60%; align-self: flex-start; justify-content: center;">
+            <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" style="flex-direction: column; align-self: flex-end; width: 400px; height: 120px; transform-origin: center; background-image: url(&quot;project://database/Assets/Farm%20RPG%20-%20Tiny%20Asset%20Pack%20-%20(All%20in%20One)/Farm%20RPG%20-%20Tiny%20Asset%20Pack%20-%20(All%20in%20One)/UI%20-%20Tiny%20Asset%20Pack/button.png?fileID=323141436&amp;guid=45bb0416b11523a49bd131d10df5c07f&amp;type=3#button_87&quot;); font-size: 40px; -unity-text-align: middle-center; white-space: nowrap; text-overflow: clip; text-shadow: 0 0 0 rgba(0, 0, 0, 0);" />
+            <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+            <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
