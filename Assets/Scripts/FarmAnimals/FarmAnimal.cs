@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Analytics;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(CapsuleCollider2D))]
 [RequireComponent(typeof(Animator))]
 public abstract class FarmAnimal : MonoBehaviour
 {
@@ -68,35 +68,11 @@ public abstract class FarmAnimal : MonoBehaviour
             _lastMovement = value;
             _animator.SetFloat("Horizontal", Mathf.Abs(_lastMovement.x));
             _animator.SetFloat("Vertical", _lastMovement.y);
-           
         }
 
     }
 
-    private Coroutine stopMovingCoroutine;
-
-    [SerializeField]
-    protected CapsuleCollider2D[] _capsuleCollider;
-
-    protected string[] sideStates =
-    {
-        "BabyIdleSide",
-        "BabyBowSide",
-        "BabyEatSide",
-        "BabyMoveSide",
-        "IdleSide",
-        "BowSide",
-        "EatSide",
-        "MoveSide",
-        "HairedIdleSide",
-        "HairedBowSide",
-        "HairedEatSide",
-        "HairedMoveSide",
-        "ShavedIdleSide",
-        "ShavedBowSide",
-        "ShavedEatSide",
-        "ShavedMoveSide"
-    };
+    private Coroutine stopMovingCoroutine; 
 
     protected void Start()
     {
@@ -220,21 +196,18 @@ public abstract class FarmAnimal : MonoBehaviour
 
         if (direction != Vector2.zero)
             LastMovement = direction;
-        
+
         if (Vector2.Distance(currentPosition, targetPosition) < 0.1f)
         {
             isMoving = false; 
             StartStopMoving(5);
         }
-        StartCoroutine(UpdateCollider());
     }
 
     private IEnumerator StopMoving(int minute)
     {
         _body.velocity = Vector2.zero; 
         canMove = false; 
-
-        StartCoroutine(UpdateCollider());
 
         yield return new WaitForSeconds(minute); 
 
@@ -272,66 +245,9 @@ public abstract class FarmAnimal : MonoBehaviour
         _animator.SetFloat("Speed", _body.velocity.magnitude);
 
     }
-
-    protected IEnumerator UpdateCollider()
-    {
-        if (this is Chicken) yield break; // Stop if it's a Chicken
-
-        string currentAnimation = GetCurrentAnimationClipName(_animator);
-
-        // Wait until the animation actually changes
-        yield return StartCoroutine(WaitForAnimationClipChange(_animator, currentAnimation));
-
-        // Now get the updated animation name
-        currentAnimation = GetCurrentAnimationClipName(_animator);
-
-        Debug.Log(currentAnimation);
-
-        // Enable or disable colliders based on the new animation
-        if (sideStates.Contains(currentAnimation))
-        {
-            _capsuleCollider[0].enabled = false;
-            _capsuleCollider[1].enabled = true;
-        }
-        else
-        {
-            _capsuleCollider[0].enabled = true;
-            _capsuleCollider[1].enabled = false;
-        }
-    }
-    private IEnumerator WaitForAnimationClipChange(Animator animator, string previousClipName)
-    {
-        // Wait until the current animation clip is different from the previous one
-        while (GetCurrentAnimationClipName(animator) == previousClipName)
-        {
-            yield return null; // Wait until the next frame
-        }
-    }
-
-    private string GetCurrentAnimationClipName(Animator animator)
-    {
-        AnimatorClipInfo[] clipInfo = animator.GetCurrentAnimatorClipInfo(0);
-
-        if (clipInfo.Length == 0) return "None"; // No animation playing
-
-        float highestWeight = 0f;
-        string strongestAnimation = "None";
-
-        foreach (var clip in clipInfo)
-        {
-            if (clip.weight > highestWeight)
-            {
-                highestWeight = clip.weight;
-                strongestAnimation = clip.clip.name;
-            }
-        }
-
-        return strongestAnimation;
-    }
     protected virtual void ApplyStage() { }
     protected virtual void MakeProduct() { } // each animal will have different way to product
     protected virtual void GetProduct() { }
     protected virtual void InteractWithAnimal() { }
 
-    
 }

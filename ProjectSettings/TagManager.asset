@@ -47,8 +47,8 @@ TagManager:
   - name: Ground
     uniqueID: 3273337507
     locked: 0
-  - name: Walkfront
-    uniqueID: 2402591195
+  - name: Grass
+    uniqueID: 2954708233
     locked: 0
   - name: FarmGround
     uniqueID: 2260845169
@@ -59,17 +59,26 @@ TagManager:
   - name: CropGround
     uniqueID: 2917392347
     locked: 0
+  - name: Road
+    uniqueID: 3951715049
+    locked: 0
   - name: Collision
     uniqueID: 900298989
     locked: 0
-  - name: Player
-    uniqueID: 1449220059
+  - name: Collision Level 2
+    uniqueID: 3379069103
     locked: 0
-  - name: Walkbehind
-    uniqueID: 1716526539
+  - name: Collision Level 3
+    uniqueID: 3296710997
     locked: 0
   - name: Decor
     uniqueID: 1195580027
+    locked: 0
+  - name: Leaf
+    uniqueID: 1716526539
+    locked: 0
+  - name: Player
+    uniqueID: 1449220059
     locked: 0
   - name: Rimlit
     uniqueID: 2996297867

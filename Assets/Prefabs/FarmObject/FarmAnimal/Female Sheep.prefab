@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8022438853240535272}
   - component: {fileID: 5983185927463610024}
   - component: {fileID: 2320925675581533198}
+  - component: {fileID: 8961632403844252917}
   m_Layer: 0
   m_Name: Female Sheep
   m_TagString: Untagged
@@ -32,9 +33,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 7637859437401685237}
-  - {fileID: 7526648367106649924}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1125476844184147922
@@ -137,9 +136,6 @@ MonoBehaviour:
   _currentStage: 
   isMoving: 0
   canMove: 1
-  _capsuleCollider:
-  - {fileID: 6850264466048435337}
-  - {fileID: 3087488049316493773}
   sheepPrefab: {fileID: 0}
 --- !u!50 &2320925675581533198
 Rigidbody2D:
@@ -168,112 +164,13 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!1 &4910616911517830901
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7526648367106649924}
-  - component: {fileID: 3087488049316493773}
-  m_Layer: 0
-  m_Name: Horizontal Collider
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7526648367106649924
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4910616911517830901}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 823327126281381055}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!70 &3087488049316493773
+--- !u!70 &8961632403844252917
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4910616911517830901}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.022869559, y: -0.24100022}
-  m_Size: {x: 0.9035537, y: 0.38895145}
-  m_Direction: 1
---- !u!1 &5551830269811803737
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7637859437401685237}
-  - component: {fileID: 6850264466048435337}
-  m_Layer: 0
-  m_Name: Vertical Collider
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &7637859437401685237
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5551830269811803737}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 823327126281381055}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!70 &6850264466048435337
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5551830269811803737}
+  m_GameObject: {fileID: 2648841884416092921}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -299,6 +196,6 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.03, y: -0.09110674}
-  m_Size: {x: 0.5, y: 0.8177865}
+  m_Offset: {x: -0.007761568, y: -0.19078389}
+  m_Size: {x: 0.58738536, y: 0.58738536}
   m_Direction: 0

@@ -37,10 +37,9 @@ public class Chicken : FarmAnimal
         {
             GetComponent<CapsuleCollider2D>().isTrigger = false;
             canMove = true;
-            _animator.SetTrigger(CurrentStage);
         }
 
-        
+        _animator.SetTrigger(CurrentStage);
     }
 
 }

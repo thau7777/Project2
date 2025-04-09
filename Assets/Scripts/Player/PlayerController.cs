@@ -1,14 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Player;
+using static UnityEditor.Progress;
 
-public class PlayerController : NetworkBehaviour, IDataPersistence
+public class PlayerController : Singleton<PlayerController>, IDataPersistence
 {
     public float walkSpeed = 1f;
-    public float runSpeed = 1f;
+    public float runSpeed = 1f; // :)) tuong de 1.5f
     public float vehicleSpeed;
     private string _currentState;
     public string CurrentState
@@ -16,7 +17,8 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
         get { return _currentState; }
         set { _currentState = value; }
     }
-    public List<string> noTargetStates = new List<string> { "Sword", "Axe", "Scythe", "Pickaxe" };
+    public string[] noTargetStates = { "Sword", "Axe", "Scythe" }; 
+    public string[] toolsAndWeapon = { "Sword", "Axe", "Scythe", "WaterCan", "Pickaxe", "Shovel" };
 
     [SerializeField] private TileTargeter tileTargeter;
 
@@ -25,7 +27,7 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     public bool CanMove
     {
         get { return _canMove; }
-        set 
+        set
         { _canMove = value; }
     }
 
@@ -41,13 +43,13 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
 
     public Vector2 movement;
     private Vector2 lastMovement;
-    public Vector2 LastMovement
+    public Vector2 LastMovement // Keep the last animation
     {
         get { return lastMovement; }
         set
         {
             lastMovement = value;
-            animator.SetFloat("Horizontal", Mathf.Abs(lastMovement.x));
+            animator.SetFloat("Horizontal", Mathf.Abs(lastMovement.x)); 
             animator.SetFloat("Vertical", lastMovement.y);
         }
 
@@ -57,26 +59,13 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     private Animator animator;
     private Collider2D col;
     private Player player;
-    
+
     [SerializeField]
     private VehicleController _currentVehicle;
     public VehicleController CurrentVehicle
     {
         get { return _currentVehicle; }
-        private set 
-        { 
-            _currentVehicle = value; 
-            if(_currentVehicle == null)
-            {
-                HadTarget = false;
-                CanRide = false;
-            }
-            else
-            {
-                HadTarget = true;
-                CanRide = true;
-            }
-        }
+        private set { _currentVehicle = value; }
     }
 
     [SerializeField]
@@ -186,20 +175,7 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     public BedScript CurrentBed
     {
         get { return _currentBed; }
-        private set
-        {
-            _currentBed = value;
-            if (_currentBed == null)
-            {
-                HadTarget = false;
-                CanSleep = false;
-            }
-            else
-            {
-                HadTarget = true;
-                CanSleep = true;
-            }
-        }
+        private set { _currentBed = value; }
     }
 
     [SerializeField]
@@ -222,7 +198,6 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
 
     void Update()
     {
-        if(!IsOwner) return;
         if (CanRun && Input.GetKey(KeyCode.LeftShift)) IsRuning = true;
         else IsRuning = false;
 
@@ -235,16 +210,14 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
             if (IsRidingVehicle)
             {
                 ChangeAnimationState("Idle");
+                CurrentVehicle.SetRiding(true);
+                CurrentVehicle.transform.SetParent(transform);
                 StartAllAction();
-                if(!IsServer)
-                RequestStartRidingServerRpc();
-                else CurrentVehicle.SetRiding(true, this);
             }
             else
             {
-                if (!IsServer)
-                    RequestStopRidingServerRpc();
-                else CurrentVehicle.SetRiding(false);
+                CurrentVehicle.SetRiding(false);
+                CurrentVehicle.transform.SetParent(null);
             }
         }
 
@@ -261,22 +234,22 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
             {
                 StopAllAction();
                 animator.SetBool(AnimationStrings.isSleep, true);
-                
+
                 IsSleeping = !IsSleeping;
                 CurrentBed.SetSleep(IsSleeping);
             }
         }
 
 
-        if(!IsRidingVehicle)
+        if (!IsRidingVehicle)
             CheckAnimation();
-     
+
         if (!IsRidingVehicle && IsHoldingItem && CanAttack && Input.GetMouseButton(0))
         {
             UseCurrentItem();
         }
 
-        if(!IsRidingVehicle && CanAttack && Input.GetMouseButton(1))
+        if (!IsRidingVehicle && CanAttack && Input.GetMouseButton(1))
         {
             if (tileTargeter.CheckHarverst(transform.position))
             {
@@ -296,13 +269,16 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     public void SetCurrentBed(BedScript bed)
     {
         if (HadTarget) return;
+        HadTarget = true;
+        CanSleep = true;
         CurrentBed = bed;
         CurrentBed.GetComponent<SpriteRenderer>().color = Color.red;
     }
 
     public void ClearBed()
     {
-        if (CurrentBed == null) return;
+        HadTarget = false;
+        CanSleep = false;
         CurrentBed.GetComponent<SpriteRenderer>().color = Color.white;
         CurrentBed = null;
 
@@ -311,38 +287,20 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     // ============= Vehicle ================
     public void SetCurrentVehicle(VehicleController vehicle)
     {
-        if (HadTarget) return;
+        if (IsRidingVehicle || HadTarget) return;
+        HadTarget = true;
+        CanRide = true;
         CurrentVehicle = vehicle;
         CurrentVehicle.GetComponent<SpriteRenderer>().color = Color.red;
     }
 
     public void ClearVehicle()
     {
-        if( CurrentVehicle == null) return;
+        HadTarget = false;
+        CanRide = false;
         CurrentVehicle.GetComponent<SpriteRenderer>().color = Color.white;
         CurrentVehicle = null;
     }
-
-
-
-
-    [ServerRpc]
-    void RequestStartRidingServerRpc()
-    {
-        CurrentVehicle.SetRiding(true, this);
-    }
-
-    [ServerRpc]
-    void RequestStopRidingServerRpc()
-    {
-        CurrentVehicle.SetRiding(false);
-    }
-
-
-
-
-
-
 
     // ============== Movement ==================
     public void SetFacing()
@@ -359,8 +317,6 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
         movement = new Vector2(moveX, moveY).normalized;
 
         if (movement != Vector2.zero) LastMovement = movement;
-
-        
 
         animator.SetFloat("Speed", movement.magnitude);
         animator.SetBool("IsRunning", Input.GetKey(KeyCode.LeftShift));
@@ -436,20 +392,20 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
 
         if (IsHoldingItem)
         {
-            
+
             switch (item.type)
             {
                 default:
                     {
                         ChangeAnimationState("Idle");
-                        
+
                         break;
                     }
                 case ItemType.Tool:
                     {
 
                         ChangeAnimationState(item.name);
-                        
+
                         break;
                     }
                 case ItemType.Crop:
@@ -472,6 +428,7 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     private void ChangeAnimationState(string newState)
     {
         if (CurrentState == newState) return;
+
         animator.Play(newState);
         CurrentState = newState;
         tileTargeter.RefreshTilemapCheck(!noTargetStates.Contains(newState));
@@ -499,7 +456,7 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
                     tileTargeter.SetTile(item);
                     break;
                 }
-        }   
+        }
     }
     // Load & Save
     public void LoadData(GameData gameData)
@@ -510,7 +467,7 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
 
     public void SaveData(ref GameData gameData)
     {
-        player.SetPosition(transform.position); 
+        player.SetPosition(transform.position);
         gameData.SetPlayerData(player);
     }
 }

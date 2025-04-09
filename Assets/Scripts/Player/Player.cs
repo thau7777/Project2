@@ -5,7 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class Player
 {
-    public enum EState
+    public enum EState // Create list animation state
     {
         Ilde,
         Sleep,
@@ -14,7 +14,7 @@ public class Player
         HoldingItem
     }
 
-    [SerializeField] private EState _curentState;
+    [SerializeField] private EState _curentState; 
     [SerializeField] private float _maxHealth;
     [SerializeField] private float _currentHealth;
     [SerializeField] private float _maxMana;
@@ -25,7 +25,7 @@ public class Player
     [SerializeField] private Vector3 _position;
 
     public float MaxHealth
-    { get { return _maxHealth; } }
+    { get { return _maxHealth; } } 
 
     public float CurrentHealth 
     { get { return _currentHealth; } }
@@ -48,7 +48,7 @@ public class Player
     public Vector3 Position
     { get { return _position; } }
 
-    public Player() 
+    public Player() // Create default Player state and stats when open game
     {
         this._curentState = EState.Ilde;
         this._maxHealth = 100;
@@ -61,12 +61,12 @@ public class Player
         this._position = Vector3.zero;
     }
 
-    // State
+    // Get State
     public EState GetState()
     {
         return _curentState;
     }
-
+    // Set State
     public void SetState(EState state)
     {
         _curentState = state;
@@ -77,7 +77,7 @@ public class Player
     {
         this._maxHealth = health;
     }
-
+    // Current health
     public void SetCurrentHealth(float health)
     {
         this._currentHealth = health;
