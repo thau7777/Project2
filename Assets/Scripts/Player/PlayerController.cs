@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using static Player;
 using static UnityEditor.Progress;
 
-public class PlayerController : Singleton<PlayerController>, IDataPersistence
+public class PlayerController : NetworkBehaviour, IDataPersistence
 {
     public float walkSpeed = 1f;
     public float runSpeed = 1f; // :)) tuong de 1.5f
@@ -198,6 +199,7 @@ public class PlayerController : Singleton<PlayerController>, IDataPersistence
 
     void Update()
     {
+        if(!IsOwner) return;
         if (CanRun && Input.GetKey(KeyCode.LeftShift)) IsRuning = true;
         else IsRuning = false;
 

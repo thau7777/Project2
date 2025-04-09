@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 
-public class TileTargeter : MonoBehaviour
+public class TileTargeter : NetworkBehaviour
 {
     [SerializeField] PlayerController playerController;
     [SerializeField]
@@ -90,6 +91,7 @@ public class TileTargeter : MonoBehaviour
     }
     void Update()
     {
+        if(!IsOwner) return;
         GetTargetTile();
     }
     void GetAllTilemaps()

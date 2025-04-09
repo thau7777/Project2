@@ -28,19 +28,19 @@ public class ItemWorldManager : Singleton<ItemWorldManager>, IDataPersistence
 
     public void DropItemFromInventory(InventoryItem item)
     {
-        Vector3 randomDir = UtilsClass.GetRandomDir();
-        Vector3 playerPos = PlayerController.Instance.transform.position;
-        Vector3 position = playerPos + randomDir * 0.5f;
-        ItemWorld newItemWorld = new ItemWorld(item.Id, item.Item, item.Quantity, position); 
+        //Vector3 randomDir = UtilsClass.GetRandomDir();
+        //Vector3 playerPos = PlayerController.Instance.transform.position;
+        //Vector3 position = playerPos + randomDir * 0.5f;
+        //ItemWorld newItemWorld = new ItemWorld(item.Id, item.Item, item.Quantity, position); 
 
-        GameObject transform = Instantiate(itemPrefab, position, Quaternion.identity);
+        //GameObject transform = Instantiate(itemPrefab, position, Quaternion.identity);
 
-        transform.gameObject.GetComponent<Rigidbody2D>().AddForce(randomDir * 5f, ForceMode2D.Impulse);
-        ItemWorldControl itemWorldControl = transform.GetComponent<ItemWorldControl>();
-        itemWorldControl.SetItemWorld(newItemWorld);
-        itemWorldControl.StartWaitForPickedup();
+        //transform.gameObject.GetComponent<Rigidbody2D>().AddForce(randomDir * 5f, ForceMode2D.Impulse);
+        //ItemWorldControl itemWorldControl = transform.GetComponent<ItemWorldControl>();
+        //itemWorldControl.SetItemWorld(newItemWorld);
+        //itemWorldControl.StartWaitForPickedup();
         
-        AddItemWorld(newItemWorld);
+        //AddItemWorld(newItemWorld);
     }
     
     public void LoadData(GameData gameData)
