@@ -17,7 +17,7 @@ public class EnviromentTree : EnvironmentalResource
             Destroy(gameObject);
         }else if (damageable.Health == 20)
         {
-            animator.SetBool(AnimationStrings.hasBeenCut, true);
+            animator.Play("Root_Idle");
             DropItem(!damageable.IsAlive);
         }
         else animator.SetTrigger("Hit");

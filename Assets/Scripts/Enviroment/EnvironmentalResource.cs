@@ -70,7 +70,7 @@ public abstract class EnvironmentalResource : MonoBehaviour
         itemToDrop.GetComponent<ItemWorldControl>().item = destructibleBlockInfo.ItemToDrop;
         Debug.Log(itemToDrop.GetComponent<ItemWorldControl>().item.itemName);
         int numItem = 0;
-        numItem = UtilsClass.GetRandomValue(destructibleBlockInfo.numOfItemCouldDrop, destructibleBlockInfo.ratioForEachNum);
+        numItem = UtilsClass.PickOneByRatio(destructibleBlockInfo.numOfItemCouldDrop, destructibleBlockInfo.ratioForEachNum);
         if(makeLessDrop) numItem /= 2;
         if (numItem > 0)
         {

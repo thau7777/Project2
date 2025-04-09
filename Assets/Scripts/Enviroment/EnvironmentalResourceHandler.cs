@@ -107,17 +107,3 @@ public class EnvironmentalResourceHandler : MonoBehaviour
         }
     }
 }
-
-[Serializable]
-public class EnvironmentalResource
-{
-    [SerializeField] private string id;
-    [SerializeField] private string name;
-    [SerializeField] private int health;
-    
-
-    public EnvironmentalResource() 
-    {
-        id = System.Guid.NewGuid().ToString();
-    }
-}

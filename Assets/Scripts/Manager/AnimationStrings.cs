@@ -18,5 +18,5 @@ internal class AnimationStrings
 
     internal static string pickup = "Pickup";
 
-    internal static string hasBeenCutTrigger = "HasBeenCut";
+    internal static string hasBeenCut = "HasBeenCut";
 }
