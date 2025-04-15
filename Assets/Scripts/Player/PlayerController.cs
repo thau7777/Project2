@@ -1,14 +1,16 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using static Player;
 using static UnityEditor.Progress;
 
 public class PlayerController : NetworkBehaviour, IDataPersistence
 {
+    [SerializeField] private InputReader _inputReader;
     public float walkSpeed = 1f;
     public float runSpeed = 1f; // :)) tuong de 1.5f
     public float vehicleSpeed;
@@ -43,15 +45,15 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     }
 
     public Vector2 movement;
-    private Vector2 lastMovement;
+    private Vector2 _lastMovement;
     public Vector2 LastMovement // Keep the last animation
     {
-        get { return lastMovement; }
+        get { return _lastMovement; }
         set
         {
-            lastMovement = value;
-            animator.SetFloat("Horizontal", Mathf.Abs(lastMovement.x)); 
-            animator.SetFloat("Vertical", lastMovement.y);
+            _lastMovement = value;
+            animator.SetFloat("Horizontal", Mathf.Abs(_lastMovement.x)); 
+            animator.SetFloat("Vertical", _lastMovement.y);
         }
 
     }
@@ -66,7 +68,20 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     public VehicleController CurrentVehicle
     {
         get { return _currentVehicle; }
-        private set { _currentVehicle = value; }
+        private set 
+        { 
+            _currentVehicle = value;
+            if (_currentVehicle == null)
+            {
+                HadTarget = false;
+                CanRide = false;
+            }
+            else
+            {
+                HadTarget = true;
+                CanRide = true;
+            }
+        }
     }
 
     [SerializeField]
@@ -76,12 +91,9 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
         get { return _isFacingRight; }
         set
         {
-            if (_isFacingRight != value)
-            {
-                transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-            }
 
             _isFacingRight = value;
+            transform.localScale = _isFacingRight ? new Vector3(1, 1, 1) : new Vector3(-1, 1, 1);
         }
     }
 
@@ -176,7 +188,20 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     public BedScript CurrentBed
     {
         get { return _currentBed; }
-        private set { _currentBed = value; }
+        private set 
+        { 
+            _currentBed = value; 
+            if(_currentBed == null)
+            {
+                HadTarget = false;
+                CanSleep = false;
+            }
+            else
+            {
+                HadTarget = true;
+                CanSleep = true;
+            }
+        }
     }
 
     [SerializeField]
@@ -190,6 +215,22 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     [SerializeField]
     private ItemOnHand _itemOnHand;
 
+    private void OnEnable()
+    {
+        _inputReader.moveEvent += OnMove;
+        _inputReader.attackEvent += OnAttack;
+        _inputReader.interactEvent += OnInteract;
+        _inputReader.runEvent += OnRun;
+    }
+
+    private void OnDisable()
+    {
+        _inputReader.moveEvent -= OnMove;
+        _inputReader.attackEvent -= OnAttack;
+        _inputReader.interactEvent -= OnInteract;
+        _inputReader.runEvent -= OnRun;
+    }
+
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -200,26 +241,29 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     void Update()
     {
         if(!IsOwner) return;
-        if (CanRun && Input.GetKey(KeyCode.LeftShift)) IsRuning = true;
-        else IsRuning = false;
+        
 
-        OnMove();
 
-        if (Input.GetKeyDown(KeyCode.E) && CanRide)
+        if (Input.GetKeyDown(KeyCode.E) && CanRide && CurrentVehicle != null)
         {
             IsRidingVehicle = !IsRidingVehicle;
 
             if (IsRidingVehicle)
             {
                 ChangeAnimationState("Idle");
-                CurrentVehicle.SetRiding(true);
-                CurrentVehicle.transform.SetParent(transform);
+                LastMovement = CurrentVehicle.VehicleLastMovement.Value;
                 StartAllAction();
+
+                RequestToRideVehicleServerRpc(
+                    GetComponent<NetworkObject>(),
+                    CurrentVehicle.GetComponent<NetworkObject>()
+                );
             }
             else
             {
-                CurrentVehicle.SetRiding(false);
-                CurrentVehicle.transform.SetParent(null);
+                RequestToUnRideVehicleServerRpc(
+                    CurrentVehicle.GetComponent<NetworkObject>()
+                );
             }
         }
 
@@ -246,20 +290,9 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
         if (!IsRidingVehicle)
             CheckAnimation();
 
-        if (!IsRidingVehicle && IsHoldingItem && CanAttack && Input.GetMouseButton(0))
-        {
-            UseCurrentItem();
-        }
+        
 
-        if (!IsRidingVehicle && CanAttack && Input.GetMouseButton(1))
-        {
-            if (tileTargeter.CheckHarverst(transform.position))
-            {
-                animator.SetTrigger(AnimationStrings.pickup);
-                _itemOnHand.gameObject.SetActive(false);
-
-            }
-        }
+        
     }
 
     private void FixedUpdate()
@@ -267,20 +300,23 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
         rb.MovePosition(rb.position + movement * CurrentSpeed * Time.fixedDeltaTime);
     }
 
+    private void OnRun(InputAction.CallbackContext context)
+    {
+        if (!CanRun) return;
+        if (context.phase == InputActionPhase.Started) IsRuning = true;
+        else if(context.phase == InputActionPhase.Canceled) IsRuning = false;
+    }
+
     // ============== Bed Stuff =============
     public void SetCurrentBed(BedScript bed)
     {
         if (HadTarget) return;
-        HadTarget = true;
-        CanSleep = true;
         CurrentBed = bed;
         CurrentBed.GetComponent<SpriteRenderer>().color = Color.red;
     }
 
     public void ClearBed()
     {
-        HadTarget = false;
-        CanSleep = false;
         CurrentBed.GetComponent<SpriteRenderer>().color = Color.white;
         CurrentBed = null;
 
@@ -289,34 +325,70 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     // ============= Vehicle ================
     public void SetCurrentVehicle(VehicleController vehicle)
     {
-        if (IsRidingVehicle || HadTarget) return;
-        HadTarget = true;
-        CanRide = true;
+        if (HadTarget) return;
         CurrentVehicle = vehicle;
         CurrentVehicle.GetComponent<SpriteRenderer>().color = Color.red;
     }
 
     public void ClearVehicle()
     {
-        HadTarget = false;
-        CanRide = false;
         CurrentVehicle.GetComponent<SpriteRenderer>().color = Color.white;
         CurrentVehicle = null;
     }
 
-    // ============== Movement ==================
-    public void SetFacing()
+    [ServerRpc]
+    private void RequestToRideVehicleServerRpc(NetworkObjectReference playerRef, NetworkObjectReference vehicleRef, ServerRpcParams rpcParams = default)
     {
-        transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        if (playerRef.TryGet(out NetworkObject playerObj) && vehicleRef.TryGet(out NetworkObject vehicleObj))
+        {
+            var player = playerObj.GetComponent<PlayerController>();
+            var vehicle = vehicleObj.GetComponent<VehicleController>();
+
+            vehicle.SetRiding(true, playerRef);
+            vehicle.transform.SetParent(playerObj.transform);
+
+            FixVehicleLocalScaleClientRpc(vehicleRef, playerRef);
+        }
     }
 
-    public void OnMove()
+
+    [ClientRpc]
+    private void FixVehicleLocalScaleClientRpc(NetworkObjectReference vehicleRef, NetworkObjectReference playerRef)
+    {
+        if (vehicleRef.TryGet(out NetworkObject vehicleObj) && playerRef.TryGet(out NetworkObject playerObj))
+        {
+            var player = playerObj.GetComponent<PlayerController>();
+            var vehicle = vehicleObj.GetComponent<VehicleController>();
+            if (vehicle.transform.localScale.x < 0) vehicle.transform.localScale = new Vector3(1, 1, 1);
+            player.IsFacingRight = vehicle.IsFacingRight.Value;
+        }
+
+    }
+
+    [ServerRpc]
+    private void RequestToUnRideVehicleServerRpc(NetworkObjectReference vehicleRef)
+    {
+        if (vehicleRef.TryGet(out NetworkObject vehicleObj))
+        {
+            vehicleObj.transform.SetParent(null, true);
+        }
+        RequestToUnRideVehicleClientRpc(vehicleRef);
+    }
+
+    [ClientRpc]
+    private void RequestToUnRideVehicleClientRpc(NetworkObjectReference vehicleRef)
+    {
+        if (vehicleRef.TryGet(out NetworkObject vehicleObj))
+            vehicleObj.GetComponent<VehicleController>().SetRiding(false,GetComponent<NetworkObject>());
+    }
+
+    // ============== Movement ==================
+
+    public void OnMove(Vector2 inputMovement)
     {
         if (!CanMove) return;
-        float moveX = Input.GetAxisRaw("Horizontal");
-        float moveY = Input.GetAxisRaw("Vertical");
 
-        movement = new Vector2(moveX, moveY).normalized;
+        movement = inputMovement.normalized;
 
         if (movement != Vector2.zero) LastMovement = movement;
 
@@ -325,7 +397,27 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
 
         if (movement.x > 0 && !IsFacingRight) IsFacingRight = true;
         else if (movement.x < 0 && IsFacingRight) IsFacingRight = false;
+
+        if (IsRidingVehicle)
+        {
+            SetCurrentVehicleMovementServerRpc(CurrentVehicle.GetComponent<NetworkObject>(), movement,IsFacingRight);
+        }
+
     }
+
+
+    [ServerRpc]
+    private void SetCurrentVehicleMovementServerRpc(NetworkObjectReference vehicleRef, Vector2 movement,bool IsFacingRight)
+    {
+        if (vehicleRef.TryGet(out NetworkObject vehicleObj))
+        {
+            var vehicle = vehicleObj.GetComponent<VehicleController>();
+            vehicle.SetMovement(movement);
+            if (movement != Vector2.zero)
+                vehicle.IsFacingRight.Value = IsFacingRight;
+        }
+    }
+
 
     private void StopAllAction()
     {
@@ -458,6 +550,27 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
                     tileTargeter.SetTile(item);
                     break;
                 }
+        }
+    }
+
+    private void OnAttack()
+    {
+        if (!IsRidingVehicle && IsHoldingItem && CanAttack && Input.GetMouseButton(0))
+        {
+            UseCurrentItem();
+        }
+    }
+
+    private void OnInteract()
+    {
+        if (!IsRidingVehicle && CanAttack && Input.GetMouseButton(1))
+        {
+            if (tileTargeter.CheckHarverst(transform.position))
+            {
+                animator.SetTrigger(AnimationStrings.pickup);
+                _itemOnHand.gameObject.SetActive(false);
+
+            }
         }
     }
     // Load & Save

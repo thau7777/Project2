@@ -214,6 +214,8 @@ GameObject:
   - component: {fileID: 5222772758702617531}
   - component: {fileID: 1169873129028570845}
   - component: {fileID: 5791893770237385704}
+  - component: {fileID: 7925322071892551780}
+  - component: {fileID: 5648876650606966138}
   m_Layer: 0
   m_Name: Blue_Bicycle
   m_TagString: Bicycle
@@ -278,7 +280,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1449220059
-  m_SortingLayer: 6
+  m_SortingLayer: 12
   m_SortingOrder: 0
   m_Sprite: {fileID: 1413721741, guid: 23e618cedba6ec04ea76c5cd460777ef, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -325,13 +327,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vehicleSpeed: 4
-  movement: {x: 1, y: 0}
-  animator: {fileID: 0}
+  DefaultFacingDirection: {x: 1, y: 0}
+  DefaultFacingRight: 0
+  VehicleLastMovement:
+    m_InternalValue: {x: 0, y: 0}
+  animator: {fileID: 5222772758702617531}
   playerController: {fileID: 0}
   colliders:
   - {fileID: 8772695372056623864}
   - {fileID: 7066090931826656711}
   - {fileID: 5838048302535506690}
+  IsFacingRight:
+    m_InternalValue: 1
   _isBeingRidden: 0
 --- !u!70 &5791893770237385704
 CapsuleCollider2D:
@@ -368,3 +375,38 @@ CapsuleCollider2D:
   m_Offset: {x: 0.024975955, y: 0.30019134}
   m_Size: {x: 1.4647983, y: 1.9571837}
   m_Direction: 0
+--- !u!114 &7925322071892551780
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7466646249119043999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 3039079246
+  InScenePlacedSourceGlobalObjectIdHash: 1985778884
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+--- !u!114 &5648876650606966138
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7466646249119043999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad8deae8091111f4eb30a56c1f4e0d3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TransitionStateInfoList: []
+  m_Animator: {fileID: 5222772758702617531}

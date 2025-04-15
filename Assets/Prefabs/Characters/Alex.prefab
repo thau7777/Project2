@@ -386,8 +386,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1707518388
-  InScenePlacedSourceGlobalObjectIdHash: 0
+  GlobalObjectIdHash: 311608809
+  InScenePlacedSourceGlobalObjectIdHash: 2885833329
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
   ActiveSceneSynchronization: 0
@@ -407,6 +407,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0db804c88d5e614bbca7bee1a38a546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _inputReader: {fileID: 11400000, guid: cf53f8622c1b9894ba0584efa38f4650, type: 2}
   walkSpeed: 2
   runSpeed: 3
   vehicleSpeed: 0
@@ -414,6 +415,7 @@ MonoBehaviour:
   - Sword
   - Axe
   - Scythe
+  - Pickaxe
   toolsAndWeapon:
   - Sword
   - Axe
