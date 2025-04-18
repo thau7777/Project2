@@ -15,14 +15,17 @@ public class NetworkTest : MonoBehaviour
         ServerBtn.onClick.AddListener(() =>
         {
             NetworkManager.Singleton.StartServer();
+            gameObject.SetActive(false);
         });
         HostBtn.onClick.AddListener(() =>
         {
             NetworkManager.Singleton.StartHost();
+            gameObject.SetActive(false);
         });
         ClientBtn.onClick.AddListener(() =>
         {
             NetworkManager.Singleton.StartClient();
+            gameObject.SetActive(false);
         });
     }
 

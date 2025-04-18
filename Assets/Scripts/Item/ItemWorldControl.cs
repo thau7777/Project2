@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class ItemWorldControl : MonoBehaviour
+public class ItemWorldControl : NetworkBehaviour
 {
     public string id;
     [ContextMenu("Generate guid for id")]
@@ -14,7 +15,7 @@ public class ItemWorldControl : MonoBehaviour
     private ItemWorld _itemWorld;
     private Rigidbody2D rb;
 
-    private bool canPickedup = true;
+    public NetworkVariable<bool> CanPickup = new NetworkVariable<bool>(true);
 
     private bool _isSpawned = false;
     public bool IsSpawned
@@ -22,6 +23,7 @@ public class ItemWorldControl : MonoBehaviour
         get { return _isSpawned; }
         private set { _isSpawned = value; }
     }
+
 
     private void Awake()
     {
@@ -33,8 +35,8 @@ public class ItemWorldControl : MonoBehaviour
     private void Update()
     {
         rb.velocity *= 0.8f;
+        
     }
-
     public void InitialItem(Item item)
     {
         transform.GetComponent<SpriteRenderer>().sprite = item.image;
@@ -55,31 +57,37 @@ public class ItemWorldControl : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") && canPickedup)
+        if (collision.CompareTag("Player") && CanPickup.Value)
         {
             if (InventoryManager.Instance.AddItemToInventory(_itemWorld))
             {
                 _itemWorld.SetColected(true);
+                GetComponent<NetworkObject>().Despawn();
                 Destroy(gameObject);
             }
         }
     }
 
-    public void StartWaitForPickedup()
+    public void StartWaitForPickup()
     {
-        StartCoroutine(WaitForPickedup());
+        RequestStartWaitForPickupServerRpc();
     }
 
-    IEnumerator WaitForPickedup()
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestStartWaitForPickupServerRpc()
     {
-        int i = 0;
-        while (i < 2)
-        {
-            canPickedup = false;
-            yield return new WaitForSeconds(1f);
-            i++;
-        }
-
-        canPickedup = true;
+        StartCoroutine(WaitForPickup());
     }
+    IEnumerator WaitForPickup()
+    {
+        CanPickup.Value = false;
+        yield return new WaitForSeconds(1.5f);
+
+        CanPickup.Value = true;
+    }
+
+
+
 }
+
+

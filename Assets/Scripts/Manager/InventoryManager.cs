@@ -1,37 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
-using UnityEditorInternal.Profiling.Memory.Experimental;
+
 using UnityEngine;
-using static UnityEditor.Progress;
+using UnityEngine.InputSystem;
 
 public class InventoryManager : Singleton<InventoryManager>, IDataPersistence
 {
+
     private Inventory inventory;
     
     public UI_Inventory inventoryUI;
 
-    private static int selectedSlot = -1;
 
-    private void Update()
+    public void ChangeSelectedSlot(ref int selectedSlot, int newValue)
     {
-        if (Input.inputString != null)
-        {
-            bool isNumber = int.TryParse(Input.inputString, out int number);
-            if (isNumber && number > 0 && number <= 9)
-            {
-                ChangeSelectedSlot(number - 1);
-            }
-        }
-    }
-
-    void ChangeSelectedSlot(int newValue)
-    {
-        if (selectedSlot >= 0)
-        {
-            inventoryUI.inventorySlotsUI[selectedSlot].Deselect();
-        }
+        inventoryUI.inventorySlotsUI[selectedSlot].Deselect();
 
         inventoryUI.inventorySlotsUI[newValue].Select();
         selectedSlot = newValue;
@@ -82,7 +63,7 @@ public class InventoryManager : Singleton<InventoryManager>, IDataPersistence
     }
 
 
-    public Item GetSelectedItem(bool use)
+    public Item GetSelectedItem(int selectedSlot ,bool use)
     {
         UI_InventorySlot slot = inventoryUI.inventorySlotsUI[selectedSlot];
         UI_InventoryItem itemInSlot = slot.GetComponentInChildren<UI_InventoryItem>();
@@ -139,7 +120,7 @@ public class InventoryManager : Singleton<InventoryManager>, IDataPersistence
         inventory = gameData.InventoryData;
         ItemDatabase.Instance.SetItem(inventory.InventoryItemList);
         inventoryUI.UpdateSlotUI(inventory);
-        ChangeSelectedSlot(0);
+        //ChangeSelectedSlot(1,1);
     }
 
     public void SaveData(ref GameData gameData)

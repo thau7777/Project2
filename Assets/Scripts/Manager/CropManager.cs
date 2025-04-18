@@ -54,7 +54,7 @@ public class CropManager : Singleton<CropManager>
         if (PlantedCrops.ContainsKey(pos) && PlantedCrops[pos].IsFullyGrown())
         {
             Item newCrop = ItemDatabase.Instance.items.Find(item => item.itemName == PlantedCrops[pos].cropName);
-            int level = RatioPick.GetRandomLevel(PlantedCrops[pos].level, PlantedCrops[pos].ratio);
+            int level = UtilsClass.PickOneByRatio(PlantedCrops[pos].level, PlantedCrops[pos].ratio);
             newCrop.image = newCrop.cropLevelImage[level-1];
             RemoveCrop(pos);
             ItemWorld crop = new ItemWorld(System.Guid.NewGuid().ToString(), newCrop,1, playerPos);

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StoneAndMineral : EnvironmentalResource
+public class StoneAndMineral : ItemDropableEntity
 {
     [SerializeField] private SpriteRenderer _spriteRenderer;
     [SerializeField] private float _onHitTime;
@@ -11,7 +11,7 @@ public class StoneAndMineral : EnvironmentalResource
     {
         base.Awake();
         _spriteRenderer = GetComponent<SpriteRenderer>();
-        _spriteRenderer.sprite = destructibleBlockInfo.mineBlockIdleSprite;
+        _spriteRenderer.sprite = entityInfo.mineBlockIdleSprite;
     }
     public override void OnHit(int damage, Vector2 knockback)
     {
@@ -35,9 +35,9 @@ public class StoneAndMineral : EnvironmentalResource
     }
     private IEnumerator ChangeSpriteRoutine()
     {
-        _spriteRenderer.sprite = destructibleBlockInfo.mineBlockHitSprite;
+        _spriteRenderer.sprite = entityInfo.mineBlockHitSprite;
         yield return new WaitForSeconds(_onHitTime);
-        _spriteRenderer.sprite = destructibleBlockInfo.mineBlockIdleSprite;
+        _spriteRenderer.sprite = entityInfo.mineBlockIdleSprite;
         _hitCoroutine = null;  
     }
 }

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3915454255731848183}
   - component: {fileID: 3906291288246050922}
   - component: {fileID: -1275534686229707652}
+  - component: {fileID: -5150478161427860128}
   - component: {fileID: 4931434756416402080}
   m_Layer: 0
   m_Name: ItemToDrop
@@ -75,7 +76,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1449220059
-  m_SortingLayer: 7
+  m_SortingLayer: 12
   m_SortingOrder: 0
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -146,10 +147,31 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &-5150478161427860128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1324879070572636304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 89726477
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 1
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!114 &4931434756416402080
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,7 +186,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 
   item: {fileID: 0}
-  _canPickup: 1
 --- !u!1 &2086567148679051196
 GameObject:
   m_ObjectHideFlags: 0
@@ -246,9 +267,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e58c1ccf02792264a8136bd455a9940d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _ogSpeed: 0.1
-  _speed: 0
-  _acceleration: 0.1
 --- !u!50 &4623904903902245597
 Rigidbody2D:
   serializedVersion: 4

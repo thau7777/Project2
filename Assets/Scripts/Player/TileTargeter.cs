@@ -89,6 +89,10 @@ public class TileTargeter : NetworkBehaviour
         GetAllTilemaps();
         TargetTilemap = Tilemaps.LastOrDefault();
     }
+    private void Start()
+    {
+        if (!IsOwner) enabled = false;
+    }
     void Update()
     {
         if(!IsOwner) return;

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6051902742516470440}
   - component: {fileID: 7104534038762311621}
   - component: {fileID: 4763312408438566351}
-  - component: {fileID: 1842842778613566375}
+  - component: {fileID: 2986477172446649099}
   - component: {fileID: 99882147283229194}
   m_Layer: 0
   m_Name: Maple Tree
@@ -77,7 +77,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1449220059
-  m_SortingLayer: 5
+  m_SortingLayer: 12
   m_SortingOrder: 0
   m_Sprite: {fileID: -2111084553, guid: 621639a1c189b36479c1f0aeec13c06a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -100,7 +100,7 @@ Animator:
   m_GameObject: {fileID: 1059118235141350529}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 6c0d8c8e13deb5d448d9798e85c1d8a3, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -146,7 +146,7 @@ CapsuleCollider2D:
   m_Offset: {x: 0.0046755797, y: -0.39773238}
   m_Size: {x: 0.7802341, y: 0.4294917}
   m_Direction: 1
---- !u!114 &1842842778613566375
+--- !u!114 &2986477172446649099
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -155,11 +155,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1059118235141350529}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d85b65873f4531e43bc942ed6b1972d6, type: 3}
+  m_Script: {fileID: 11500000, guid: 3d198d6755d118f4bbb072d76f07050f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numItem: 2
-  item: {fileID: 2516789850110517418, guid: 7807146909d0a944895bb6c00994b06c, type: 3}
+  entityInfo: {fileID: 11400000, guid: 1ccc778b3b62b5b47bce960cac8cb654, type: 2}
+  itemDropPrefab: {fileID: 1324879070572636304, guid: 758e550aad33f9247bb2707f07dfc14c, type: 3}
 --- !u!114 &99882147283229194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,7 +175,7 @@ MonoBehaviour:
   damageableHit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1842842778613566375}
+      - m_Target: {fileID: 2986477172446649099}
         m_TargetAssemblyTypeName: EnvironmentalResource, Assembly-CSharp
         m_MethodName: OnHit
         m_Mode: 0
@@ -187,14 +187,11 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  changeState:
-    m_PersistentCalls:
-      m_Calls: []
   _maxHealth: 40
   _health: 40
   _isAlive: 1
   isInvincible: 0
-  invincibilityTime: 0
+  invincibilityTime: 0.1
 --- !u!1 &3646881572690721612
 GameObject:
   m_ObjectHideFlags: 0

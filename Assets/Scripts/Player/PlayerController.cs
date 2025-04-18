@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Cinemachine;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
@@ -20,7 +21,7 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
         get { return _currentState; }
         set { _currentState = value; }
     }
-    public string[] noTargetStates = { "Sword", "Axe", "Scythe" }; 
+    public string[] noTargetStates = { "Sword", "Axe", "Scythe" };
     public string[] toolsAndWeapon = { "Sword", "Axe", "Scythe", "WaterCan", "Pickaxe", "Shovel" };
 
     [SerializeField] private TileTargeter tileTargeter;
@@ -40,7 +41,7 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     {
         get
         {
-            return _currentSpeed = CanMove ? IsRidingVehicle ? vehicleSpeed : IsRuning ? runSpeed : walkSpeed : 0;
+            return _currentSpeed = CanMove ? IsRidingVehicle ? vehicleSpeed : IsRunning ? runSpeed : walkSpeed : 0;
         }
     }
 
@@ -52,7 +53,7 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
         set
         {
             _lastMovement = value;
-            animator.SetFloat("Horizontal", Mathf.Abs(_lastMovement.x)); 
+            animator.SetFloat("Horizontal", Mathf.Abs(_lastMovement.x));
             animator.SetFloat("Vertical", _lastMovement.y);
         }
 
@@ -68,8 +69,8 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     public VehicleController CurrentVehicle
     {
         get { return _currentVehicle; }
-        private set 
-        { 
+        private set
+        {
             _currentVehicle = value;
             if (_currentVehicle == null)
             {
@@ -107,10 +108,14 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
 
     [SerializeField]
     private bool _isRuning = false;
-    public bool IsRuning
+    public bool IsRunning
     {
         get { return _isRuning; }
-        private set { _isRuning = value; }
+        private set 
+        { 
+            _isRuning = value;
+            animator.SetBool("IsRunning", _isRuning);
+        }
     }
 
     [SerializeField]
@@ -188,10 +193,10 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     public BedScript CurrentBed
     {
         get { return _currentBed; }
-        private set 
-        { 
-            _currentBed = value; 
-            if(_currentBed == null)
+        private set
+        {
+            _currentBed = value;
+            if (_currentBed == null)
             {
                 HadTarget = false;
                 CanSleep = false;
@@ -212,15 +217,19 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
         private set { _hadTarget = value; }
     }
 
+    private int selectedSlot = 0; 
     [SerializeField]
     private ItemOnHand _itemOnHand;
-
+    [SerializeField]
+    private CinemachineVirtualCamera virtualCamera;
     private void OnEnable()
     {
         _inputReader.moveEvent += OnMove;
         _inputReader.attackEvent += OnAttack;
         _inputReader.interactEvent += OnInteract;
+        _inputReader.secondInteractEvent += OnSecondInteract;
         _inputReader.runEvent += OnRun;
+        _inputReader.changeInventorySlotEvent += GetInputValueToChangeSlot;
     }
 
     private void OnDisable()
@@ -228,32 +237,46 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
         _inputReader.moveEvent -= OnMove;
         _inputReader.attackEvent -= OnAttack;
         _inputReader.interactEvent -= OnInteract;
+        _inputReader.secondInteractEvent -= OnSecondInteract;
         _inputReader.runEvent -= OnRun;
+        _inputReader.changeInventorySlotEvent -= GetInputValueToChangeSlot;
     }
 
     private void Start()
     {
+
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         col = GetComponent<Collider2D>();
+
+        if (!IsOwner) enabled = false;
+        else
+        {
+            virtualCamera = GameObject.Find("Virtual Camera").GetComponent<CinemachineVirtualCamera>();
+            virtualCamera.Follow = transform;
+        }
+        
     }
 
     void Update()
     {
-        if(!IsOwner) return;
-        
+        CheckAnimation();
+    }
 
-
-        if (Input.GetKeyDown(KeyCode.E) && CanRide && CurrentVehicle != null)
+    private void FixedUpdate()
+    {
+        rb.MovePosition(rb.position + movement * CurrentSpeed * Time.fixedDeltaTime);
+    }
+    private void OnSecondInteract()
+    {
+        if (CanRide && CurrentVehicle != null)
         {
             IsRidingVehicle = !IsRidingVehicle;
-
             if (IsRidingVehicle)
             {
                 ChangeAnimationState("Idle");
                 LastMovement = CurrentVehicle.VehicleLastMovement.Value;
                 StartAllAction();
-
                 RequestToRideVehicleServerRpc(
                     GetComponent<NetworkObject>(),
                     CurrentVehicle.GetComponent<NetworkObject>()
@@ -267,7 +290,7 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.E) && CanSleep)
+        if (CanSleep)
         {
             if (IsSleeping)
             {
@@ -285,26 +308,12 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
                 CurrentBed.SetSleep(IsSleeping);
             }
         }
-
-
-        if (!IsRidingVehicle)
-            CheckAnimation();
-
-        
-
-        
     }
-
-    private void FixedUpdate()
-    {
-        rb.MovePosition(rb.position + movement * CurrentSpeed * Time.fixedDeltaTime);
-    }
-
     private void OnRun(InputAction.CallbackContext context)
     {
         if (!CanRun) return;
-        if (context.phase == InputActionPhase.Started) IsRuning = true;
-        else if(context.phase == InputActionPhase.Canceled) IsRuning = false;
+        if (context.phase == InputActionPhase.Started) IsRunning = true;
+        else if (context.phase == InputActionPhase.Canceled) IsRunning = false;
     }
 
     // ============== Bed Stuff =============
@@ -379,7 +388,7 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     private void RequestToUnRideVehicleClientRpc(NetworkObjectReference vehicleRef)
     {
         if (vehicleRef.TryGet(out NetworkObject vehicleObj))
-            vehicleObj.GetComponent<VehicleController>().SetRiding(false,GetComponent<NetworkObject>());
+            vehicleObj.GetComponent<VehicleController>().SetRiding(false, GetComponent<NetworkObject>());
     }
 
     // ============== Movement ==================
@@ -393,21 +402,21 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
         if (movement != Vector2.zero) LastMovement = movement;
 
         animator.SetFloat("Speed", movement.magnitude);
-        animator.SetBool("IsRunning", Input.GetKey(KeyCode.LeftShift));
+        
 
         if (movement.x > 0 && !IsFacingRight) IsFacingRight = true;
         else if (movement.x < 0 && IsFacingRight) IsFacingRight = false;
 
         if (IsRidingVehicle)
         {
-            SetCurrentVehicleMovementServerRpc(CurrentVehicle.GetComponent<NetworkObject>(), movement,IsFacingRight);
+            SetCurrentVehicleMovementServerRpc(CurrentVehicle.GetComponent<NetworkObject>(), movement, IsFacingRight);
         }
 
     }
 
 
     [ServerRpc]
-    private void SetCurrentVehicleMovementServerRpc(NetworkObjectReference vehicleRef, Vector2 movement,bool IsFacingRight)
+    private void SetCurrentVehicleMovementServerRpc(NetworkObjectReference vehicleRef, Vector2 movement, bool IsFacingRight)
     {
         if (vehicleRef.TryGet(out NetworkObject vehicleObj))
         {
@@ -447,7 +456,7 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
 
     public Item GetSelectedItem()
     {
-        Item receivedItem = InventoryManager.Instance.GetSelectedItem(false);
+        Item receivedItem = InventoryManager.Instance.GetSelectedItem(selectedSlot,false);
         if (receivedItem != null)
         {
             return receivedItem;
@@ -458,7 +467,7 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
 
     public void UseSelectedItem()
     {
-        Item receivedItem = InventoryManager.Instance.GetSelectedItem(true);
+        Item receivedItem = InventoryManager.Instance.GetSelectedItem(selectedSlot, true);
         if (receivedItem != null)
         {
             Debug.Log("Used item: " + receivedItem);
@@ -470,9 +479,26 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     }
 
     // ===================== Animation =====================
+
+    private void GetInputValueToChangeSlot(int value, bool isKeyboard)
+    {
+
+        if (isKeyboard)
+        {
+            if(value != selectedSlot)
+                InventoryManager.Instance.ChangeSelectedSlot(ref selectedSlot, value);
+        }
+        else
+        {
+            int newValue = selectedSlot + value;
+            if (newValue > 8) newValue = 0;
+            else if(newValue < 0) newValue = 8;
+            InventoryManager.Instance.ChangeSelectedSlot(ref selectedSlot, newValue);
+        }
+    }
     public void CheckAnimation()
     {
-        if (!CanAttack) return;
+        if (!CanAttack || IsRidingVehicle) return;
         _itemOnHand.gameObject.SetActive(false);
         Item item = GetSelectedItem();
         if (item != null)
@@ -512,12 +538,10 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
                     }
             }
         }
-
-        if (!IsHoldingItem || InventoryManager.Instance.GetSelectedItem(false) == null)
-        {
-            ChangeAnimationState(AnimationStrings.idle);
-        }
+        else ChangeAnimationState(AnimationStrings.idle);
     }
+
+
 
     private void ChangeAnimationState(string newState)
     {
@@ -526,13 +550,13 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
         animator.Play(newState);
         CurrentState = newState;
         tileTargeter.RefreshTilemapCheck(!noTargetStates.Contains(newState));
-        
+
     }
 
 
     private void UseCurrentItem()
     {
-        Item item = InventoryManager.Instance.GetSelectedItem(false);
+        Item item = InventoryManager.Instance.GetSelectedItem(selectedSlot, false);
         switch (item.type)
         {
             default:

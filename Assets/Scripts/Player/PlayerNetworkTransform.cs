@@ -66,6 +66,7 @@ public class PlayerNetworkTransform : NetworkBehaviour
     {
         if (Vector2.Distance(transform.position, _playerState.Value.Position) > 0.01f)
         {
+            Debug.Log("consuming");
             transform.position = Vector3.SmoothDamp(transform.position, _playerState.Value.Position, ref _posVel, _cheapInterpolationTime);
         }
 

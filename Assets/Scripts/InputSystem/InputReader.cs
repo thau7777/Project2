@@ -10,7 +10,10 @@ public class InputReader : ScriptableObject, Controls.IPlayerActions
     public Action<Vector2> moveEvent;
     public Action attackEvent;
     public Action interactEvent;
+    public Action secondInteractEvent;
     public Action<InputAction.CallbackContext> runEvent;
+
+    public Action<int,bool> changeInventorySlotEvent;
 
     private Controls input;
     private void OnEnable()
@@ -47,5 +50,44 @@ public class InputReader : ScriptableObject, Controls.IPlayerActions
     {
         runEvent?.Invoke(context);
 
+    }
+
+    public void OnSecondInteract(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started) secondInteractEvent?.Invoke();
+    }
+
+
+    public void OnChangeInventorySlotByButton(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started && context.control.device is Keyboard)
+        {
+            if(int.TryParse(context.control.name, out int inputNumber))
+            changeInventorySlotEvent?.Invoke(inputNumber-1,true);
+        }
+        else if (context.phase == InputActionPhase.Started && context.control.device is Gamepad)
+        {
+            if(context.control.name == "Left Shoulder")
+            {
+                changeInventorySlotEvent?.Invoke(-1, false);
+            }
+            if (context.control.name == "Right Shoulder")
+            {
+                changeInventorySlotEvent?.Invoke(1, false);
+            }
+        }
+    }
+
+    public void OnChangeInventorySlotByMouseWheel(InputAction.CallbackContext context)
+    {
+        if (context.phase == InputActionPhase.Started)
+        {
+            float scrollValue = context.ReadValue<float>();
+            if (scrollValue > 0)
+                changeInventorySlotEvent?.Invoke(-1, false);
+            else if (scrollValue < 0)
+                changeInventorySlotEvent?.Invoke(1, false);
+        }
+        
     }
 }
