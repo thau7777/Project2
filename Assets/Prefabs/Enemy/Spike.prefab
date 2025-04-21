@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1614089565591641065, guid: 5bacb55fe68bac64abbf970ff2a95448, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 5077854521655654177, guid: 5bacb55fe68bac64abbf970ff2a95448, type: 3}
       propertyPath: m_Name
       value: Spike
