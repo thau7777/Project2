@@ -10,12 +10,12 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5077854521655654177, guid: 5bacb55fe68bac64abbf970ff2a95448, type: 3}
       propertyPath: m_Name
-      value: Spike
+      value: Goblin_Hold_Bomb
       objectReference: {fileID: 0}
     - target: {fileID: 6545737854487136737, guid: 5bacb55fe68bac64abbf970ff2a95448, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -1347930059, guid: 2ac29d04d67a18c478085e2b34d4255e, type: 3}
+      objectReference: {fileID: -331564674, guid: 62b3dc5b7e4ff0949b6b15f77241a0c3, type: 3}
     - target: {fileID: 6814551443767715304, guid: 5bacb55fe68bac64abbf970ff2a95448, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
