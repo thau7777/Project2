@@ -14,30 +14,67 @@ public class ItemWorldControl : NetworkBehaviour
     public Item item;
     private ItemWorld _itemWorld;
     private Rigidbody2D rb;
+    [SerializeField] private Collider2D _collider2D;
+    [SerializeField] private Collider2D _TargetzoneCollider2D;
 
     public NetworkVariable<bool> CanPickup = new NetworkVariable<bool>(true);
 
-    private bool _isSpawned = false;
-    public bool IsSpawned
-    {
-        get { return _isSpawned; }
-        private set { _isSpawned = value; }
-    }
+    //private bool _isSpawned = false;
+    //public bool IsSpawned
+    //{
+    //    get { return _isSpawned; }
+    //    private set { _isSpawned = value; }
+    //}
+    public Transform targetTransform;
 
+    [SerializeField] private float _acceleration;
+    [SerializeField] private float _maxSpeed;
+
+    private Vector3 _currentVelocity = Vector2.zero;
 
     private void Awake()
     {
-        InitialItem(item);
-        _itemWorld = new ItemWorld(id, item, 1, transform.position);
         rb = GetComponent<Rigidbody2D>();
+        InitialItemWorld();
     }
 
-    private void Update()
+    public override void OnNetworkSpawn()
     {
-        rb.velocity *= 0.8f;
+        base.OnNetworkSpawn();
+        CanPickup.OnValueChanged += UpdateCollider;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        CanPickup.OnValueChanged -= UpdateCollider;
+    }
+    private void FixedUpdate()
+    {
+        if (targetTransform == null)
+        {
+            _currentVelocity = Vector2.zero;
+            rb.velocity = Vector2.zero;
+        }
+        else
+        {
+            Vector3 currentPos = rb.position;
+            Vector3 direction = (targetTransform.position - currentPos).normalized;
+
+            _currentVelocity = direction * _acceleration;
+            _currentVelocity = Vector2.ClampMagnitude(_currentVelocity, _maxSpeed);
+            _acceleration += 0.1f;
+            rb.velocity = _currentVelocity;
+        }
         
     }
-    public void InitialItem(Item item)
+
+    public void SetTargetTransform(Transform playerTransform)
+    {
+        targetTransform = playerTransform;
+    }
+
+    public void SetItemImage(Sprite image)
     {
         transform.GetComponent<SpriteRenderer>().sprite = item.image;
     }
@@ -47,12 +84,16 @@ public class ItemWorldControl : NetworkBehaviour
         return _itemWorld;
     }
 
-    public void SetItemWorld(ItemWorld itemWorld)
+    public void InitialItemWorld(ItemWorld itemWorld = null)
     {
+        if(itemWorld == null)
+        {
+            itemWorld = new ItemWorld(System.Guid.NewGuid().ToString(), item, 1, transform.position);
+        }
         _itemWorld = itemWorld;
         id = itemWorld.Id;
         item = itemWorld.Item;
-        InitialItem(item);
+        SetItemImage(item.image);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -61,32 +102,60 @@ public class ItemWorldControl : NetworkBehaviour
         {
             if (InventoryManager.Instance.AddItemToInventory(_itemWorld))
             {
-                _itemWorld.SetColected(true);
-                GetComponent<NetworkObject>().Despawn();
-                Destroy(gameObject);
+                if(IsServer)
+                RequestToDestroyObjectServerRpc(GetComponent<NetworkObject>());
             }
         }
     }
 
-    public void StartWaitForPickup()
+    [ServerRpc(RequireOwnership = false)]
+    private void RequestToDestroyObjectServerRpc(NetworkObjectReference objRef)
     {
-        RequestStartWaitForPickupServerRpc();
+        SetColectedForClientRpc(objRef);
+        if (objRef.TryGet(out NetworkObject obj))
+        {
+            Destroy(obj.gameObject);
+        }
+        
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    private void RequestStartWaitForPickupServerRpc()
+    [ClientRpc]
+    private void SetColectedForClientRpc(NetworkObjectReference objRef)
     {
-        StartCoroutine(WaitForPickup());
+        if (objRef.TryGet(out NetworkObject obj))
+        {
+            var itemWorldControl = obj.GetComponent<ItemWorldControl>();
+            itemWorldControl._itemWorld.SetColected(true);
+        }
     }
-    IEnumerator WaitForPickup()
+
+
+    public void StartWaitForPickup(float timesTillCanPickup)
+    {
+        StartCoroutine(WaitForPickup(timesTillCanPickup));
+    }
+
+    IEnumerator WaitForPickup(float timesTillCanPickup)
     {
         CanPickup.Value = false;
-        yield return new WaitForSeconds(1.5f);
-
+        yield return new WaitForSeconds(timesTillCanPickup);
         CanPickup.Value = true;
     }
 
-
+    private void UpdateCollider(bool oldValue, bool newValue)
+    {
+        if(newValue)
+        {
+            _collider2D.enabled = true;
+            _TargetzoneCollider2D.enabled = true;
+        }
+        else
+        {
+            _collider2D.enabled = false;
+            _TargetzoneCollider2D.enabled = false;
+        }
+    }
+    
 
 }
 

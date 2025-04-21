@@ -86,7 +86,7 @@ public class UI_InventoryItem : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         
         if (itemHasBeenCreated)
         {
-            CraftingSystemManager.Instance.TakeOfItem();
+            CraftingSystemManager.Instance.TakeOffItem();
             InventoryManager.Instance.AddItemToInventory(InventoryItem, -1);
         }
     }

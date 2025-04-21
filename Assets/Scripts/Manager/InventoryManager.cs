@@ -4,23 +4,21 @@ using UnityEngine.InputSystem;
 
 public class InventoryManager : Singleton<InventoryManager>, IDataPersistence
 {
-
     private Inventory inventory;
     
     public UI_Inventory inventoryUI;
 
 
-    public void ChangeSelectedSlot(ref int selectedSlot, int newValue)
+    public void ChangeSelectedSlot(int selectedSlot, int newValue)
     {
         inventoryUI.inventorySlotsUI[selectedSlot].Deselect();
 
         inventoryUI.inventorySlotsUI[newValue].Select();
-        selectedSlot = newValue;
     }
 
     public bool AddItemToInventory(ItemWorld item)
     {
-        InventoryItem inventoryItem = new InventoryItem(item.Id, item.Item, 0, item.Quantity);
+        InventoryItem inventoryItem = new(item.Id, item.Item, 0, item.Quantity);
         return AddItemToInventorySlot(inventoryItem);
     }    
 
@@ -38,13 +36,24 @@ public class InventoryManager : Singleton<InventoryManager>, IDataPersistence
 
             if (itemUI != null &&
                 itemUI.InventoryItem.Item == newItem.Item &&
-                itemUI.InventoryItem.Quantity < itemUI.InventoryItem.MaxStack &&
-                itemUI.InventoryItem.Item.stackable)
+                itemUI.InventoryItem.Item.stackable &&
+                itemUI.InventoryItem.Quantity < itemUI.InventoryItem.MaxStack)
             {
-                itemUI.InventoryItem.IncreaseQuantity(newItem.Quantity);
-                itemUI.RefreshCount();
-                inventoryUI.UpdateSlotUI(inventory);
-                return true;
+                if (itemUI.InventoryItem.Quantity + newItem.Quantity <= itemUI.InventoryItem.MaxStack)
+                {
+                    itemUI.InventoryItem.IncreaseQuantity(newItem.Quantity);
+                    itemUI.RefreshCount();
+                    return true;
+                }
+                else
+                {
+                    int quantityToAdd = itemUI.InventoryItem.MaxStack - itemUI.InventoryItem.Quantity;
+                    itemUI.InventoryItem.IncreaseQuantity(quantityToAdd);
+                    itemUI.RefreshCount(); 
+                    newItem.DecreaseQuantity(quantityToAdd);
+                }
+                
+                
             }
         }
 

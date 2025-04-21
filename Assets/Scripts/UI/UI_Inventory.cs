@@ -8,15 +8,15 @@ public class UI_Inventory : MonoBehaviour
     public Transform toolBarContainer;
     public Transform inventoryContainer;
     public GameObject slotPrefab;
-    public GameObject itemPrefab;
+    public GameObject UI_inventoryItemPrefab;
     public List<UI_InventorySlot> inventorySlotsUI;
     private int maxToolBarSlot = 9;
 
     // UpdateUI
-    public void UpdateSlotUI(Inventory invenrory)
+    public void UpdateSlotUI(Inventory inventory)
     {
         ClearSlotUI();
-        int totalSlots = invenrory.MaxSlotInventory;
+        int totalSlots = inventory.MaxSlotInventory;
 
         for (int i = 0; i < totalSlots; i++)
         {
@@ -26,7 +26,7 @@ public class UI_Inventory : MonoBehaviour
             inventoryslotUI.slotIndex = i;
             inventorySlotsUI.Add(inventoryslotUI);
 
-            InventoryItem inventoryItem = invenrory.GetInventoryItemOfIndex(i);
+            InventoryItem inventoryItem = inventory.GetInventoryItemOfIndex(i);
             if (inventoryItem != null )
             {
                 SpawnItem(inventoryItem, slotUIGO);
@@ -50,7 +50,7 @@ public class UI_Inventory : MonoBehaviour
 
     public void SpawnItem(InventoryItem item, GameObject slot)
     {
-        GameObject newItemGO = Instantiate(itemPrefab, slot.transform);
+        GameObject newItemGO = Instantiate(UI_inventoryItemPrefab, slot.transform);
         UI_InventoryItem inventoryItem = newItemGO.GetComponent<UI_InventoryItem>();
         inventoryItem.InitialiseItem(item);
     }

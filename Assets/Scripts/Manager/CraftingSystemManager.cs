@@ -7,7 +7,7 @@ public class CraftingSystemManager : Singleton<CraftingSystemManager>
     public List<GameObject> listOutputSlot;
     public GameObject outputSlot;
     public List<Recipe> recipes;
-    public GameObject itemPrefab;
+    public GameObject itemDropPrefab;
 
     private UI_InventoryItem[,] grid = new UI_InventoryItem[3, 3];
 
@@ -80,13 +80,13 @@ public class CraftingSystemManager : Singleton<CraftingSystemManager>
 
         UI_InventorySlot slot = outputSlot.GetComponent<UI_InventorySlot>();
         InventoryItem inventoryItem = new InventoryItem(System.Guid.NewGuid().ToString(), item, slot.slotIndex);
-        GameObject newItem = Instantiate(itemPrefab, outputSlot.transform);
+        GameObject newItem = Instantiate(itemDropPrefab, outputSlot.transform);
         UI_InventoryItem inventoryItemUI = newItem.GetComponent<UI_InventoryItem>();
         inventoryItemUI.InitialiseItem(inventoryItem);
         inventoryItemUI.IsItemCreated(true);
     }
 
-    public void TakeOfItem()
+    public void TakeOffItem()
     {
         for (int i = 0; i < grid.GetLength(0); i++)
         {
