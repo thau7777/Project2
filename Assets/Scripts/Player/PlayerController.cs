@@ -6,11 +6,10 @@ using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static Player;
-using static UnityEditor.Progress;
 
 public class PlayerController : NetworkBehaviour, IDataPersistence
 {
+    //private Inventory inventory;
     [SerializeField] private InputReader _inputReader;
     public float walkSpeed = 1f;
     public float runSpeed = 1f; // :)) tuong de 1.5f
@@ -32,7 +31,9 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     {
         get { return _canMove; }
         set
-        { _canMove = value; }
+        { 
+            _canMove = value; 
+        }
     }
 
     [SerializeField]
@@ -222,6 +223,7 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
     private ItemOnHand _itemOnHand;
     [SerializeField]
     private CinemachineVirtualCamera virtualCamera;
+   
     private void OnEnable()
     {
         _inputReader.moveEvent += OnMove;
@@ -395,10 +397,9 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
 
     public void OnMove(Vector2 inputMovement)
     {
-        if (!CanMove) return;
-
         movement = inputMovement.normalized;
 
+        if (!CanMove) movement = Vector2.zero;
         if (movement != Vector2.zero) LastMovement = movement;
 
         animator.SetFloat("Speed", movement.magnitude);
@@ -485,15 +486,21 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
 
         if (isKeyboard)
         {
-            if(value != selectedSlot)
-                InventoryManager.Instance.ChangeSelectedSlot(ref selectedSlot, value);
+            if (value != selectedSlot)
+            {
+                InventoryManager.Instance.ChangeSelectedSlot(selectedSlot, value);
+                selectedSlot = value;
+            }
+            //object data = new object({selectedSlot,value});
+            // onChangeSelectedSlot.Raise(this,data);
         }
         else
         {
             int newValue = selectedSlot + value;
             if (newValue > 8) newValue = 0;
             else if(newValue < 0) newValue = 8;
-            InventoryManager.Instance.ChangeSelectedSlot(ref selectedSlot, newValue);
+            InventoryManager.Instance.ChangeSelectedSlot(selectedSlot, newValue);
+            selectedSlot = newValue;
         }
     }
     public void CheckAnimation()

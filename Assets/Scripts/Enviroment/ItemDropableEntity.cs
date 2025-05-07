@@ -18,44 +18,42 @@ public abstract class ItemDropableEntity : NetworkBehaviour
         damageable = GetComponent<Damageable>();
     }
 
-    protected void Start()
-    {
-        
-    }
-    
-
     public virtual void OnHit(int damage, Vector2 knockback) { }
 
 
-    
-
     public void DropItem(bool makeLessDrop)
     {
+        if(!IsServer) return;
         RequestToDropItemServerRpc(makeLessDrop);
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     private void RequestToDropItemServerRpc(bool makeLessDrop)
     {
-        itemDropPrefab.GetComponent<ItemWorldControl>().item = entityInfo.ItemToDrop;
+        
         int numItem = 0;
         numItem = UtilsClass.PickOneByRatio(entityInfo.numOfItemCouldDrop, entityInfo.ratioForEachNum);
+        Debug.Log("Num of item drop: " + numItem);
         if (makeLessDrop) numItem /= 2;
         if (numItem > 0)
         {
             for (int i = 0; i < numItem; i++)
             {
                 Vector3 randomDir = UtilsClass.GetRandomDir();
-                Vector3 position = this.transform.position + randomDir * 0.2f;
+                Vector3 position = transform.position + randomDir * 0.2f;
 
-                GameObject obj = Instantiate(itemDropPrefab, position, Quaternion.identity);
-                obj.GetComponent<NetworkObject>().Spawn();
-                SetItemDropStatusClientRpc(obj.GetComponent<NetworkObject>(), randomDir);
+                ItemWorld newItemWorldInfo = new(System.Guid.NewGuid().ToString(), entityInfo.ItemToDrop, 1, position);
+
+                GameObject newItemObject = Instantiate(itemDropPrefab, position, Quaternion.identity);
+                var newItemNetworkObject = newItemObject.GetComponent<NetworkObject>();
+                newItemNetworkObject.Spawn();
+
+                var itemWorldControl = newItemNetworkObject.GetComponent<ItemWorldControl>();
+                itemWorldControl.StartWaitForPickup(2f);
+                itemWorldControl.InitialItemWorld(newItemWorldInfo);
 
 
-                ItemWorld itemWorld = obj.GetComponent<ItemWorldControl>().GetItemWorld();
-                itemWorld.SetId();
-                ItemWorldManager.Instance.AddItemWorld(itemWorld);
+                SetItemDropStatusClientRpc(newItemNetworkObject, randomDir);
 
             }
         }
@@ -67,9 +65,11 @@ public abstract class ItemDropableEntity : NetworkBehaviour
         if(itemNetworkObject.TryGet(out NetworkObject obj))
         {
             var itemWorldControl = obj.GetComponent<ItemWorldControl>();
-            itemWorldControl.StartWaitForPickup();
-            itemWorldControl.GetComponent<Rigidbody2D>().AddForce(randomDir * 5f, ForceMode2D.Impulse);
+            itemWorldControl.GetComponent<Rigidbody2D>().AddForce(randomDir * 1f, ForceMode2D.Impulse);
 
+            ItemWorld itemWorld = itemWorldControl.GetItemWorld();
+            
+            ItemWorldManager.Instance.AddItemWorld(itemWorld);
 
         }
     }

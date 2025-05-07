@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: 1449220059
   m_SortingLayer: 12
   m_SortingOrder: 0
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: -790498180, guid: 82a56d660086c94439a932cf6e53cf3f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -86,7 +86,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 1
 --- !u!70 &3906291288246050922
@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 89726477
+  GlobalObjectIdHash: 185786727
   InScenePlacedSourceGlobalObjectIdHash: 0
   AlwaysReplicateAsRoot: 0
   SynchronizeTransform: 1
@@ -184,8 +184,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e4174b1bf1b94e41b62a710631ebeb5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 
-  item: {fileID: 0}
+  id: 733a2349-9d2b-4a5d-8441-5830e12d6ab2
+  item: {fileID: 11400000, guid: d6b133717e4c1834ea613b6d51262c5d, type: 2}
+  _collider2D: {fileID: 3906291288246050922}
+  _TargetzoneCollider2D: {fileID: 1989492343227124061}
+  CanPickup:
+    m_InternalValue: 1
+  targetTransform: {fileID: 0}
+  _acceleration: 0.5
+  _maxSpeed: 0.5
 --- !u!1 &2086567148679051196
 GameObject:
   m_ObjectHideFlags: 0
@@ -197,7 +204,7 @@ GameObject:
   - component: {fileID: 3129120065336739542}
   - component: {fileID: 1989492343227124061}
   - component: {fileID: 9103251936241132996}
-  - component: {fileID: 4623904903902245597}
+  - component: {fileID: 574811391499198096}
   m_Layer: 0
   m_Name: CheckTargetZone
   m_TagString: Untagged
@@ -267,7 +274,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e58c1ccf02792264a8136bd455a9940d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!50 &4623904903902245597
+--- !u!50 &574811391499198096
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -275,14 +282,14 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2086567148679051196}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 0
+  m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2

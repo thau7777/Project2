@@ -65,4 +65,9 @@ public class ItemWorld : IItemHolder
     {
         this._quantity = amount;
     }
+
+    public void SetPositon(Vector3 position)
+    {
+        _position = position;
+    }
 }

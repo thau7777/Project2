@@ -37,16 +37,13 @@ public class VehicleController : NetworkBehaviour
     }
 
 
-    private void Awake()
-    {
 
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
         VehicleLastMovement.OnValueChanged += SetFacingDirectionByAnimator;
         VehicleLastMovement.Value = DefaultFacingDirection;
-        //animator.SetFloat("Horizontal", Mathf.Abs(VehicleLastMovement.Value.x));
-        //animator.SetFloat("Vertical", VehicleLastMovement.Value.y);
-        //SetCollision(VehicleLastMovement.Value);
     }
-
     private void OnDisable()
     {
         VehicleLastMovement.OnValueChanged -= SetFacingDirectionByAnimator;
@@ -56,9 +53,6 @@ public class VehicleController : NetworkBehaviour
         animator = GetComponent<Animator>();
     }
 
-    void Update()
-    {
-    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -117,10 +111,6 @@ public class VehicleController : NetworkBehaviour
         animator.SetFloat("Speed", movement.magnitude);
 
         if(movement != Vector2.zero) VehicleLastMovement.Value = movement;
-
-        //animator.SetFloat("Horizontal", Mathf.Abs(VehicleLastMovement.Value.x));
-        //animator.SetFloat("Vertical", VehicleLastMovement.Value.y);
-        //SetCollision(VehicleLastMovement.Value);
 
     }
 
