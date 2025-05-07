@@ -29,9 +29,9 @@ public class ItemWorldManager : Singleton<ItemWorldManager>, IDataPersistence
     public void DropItemFromInventory(InventoryItem item)
     {
         //Vector3 randomDir = UtilsClass.GetRandomDir();
-        //Vector3 playerPos = PlayerController.Instance.transform.position;
+        //Vector3 playerPos = 
         //Vector3 position = playerPos + randomDir * 0.5f;
-        //ItemWorld newItemWorld = new ItemWorld(item.Id, item.Item, item.Quantity, position); 
+        //ItemWorld newItemWorld = new ItemWorld(item.Id, item.Item, item.Quantity, position);
 
         //GameObject transform = Instantiate(itemPrefab, position, Quaternion.identity);
 
@@ -39,7 +39,7 @@ public class ItemWorldManager : Singleton<ItemWorldManager>, IDataPersistence
         //ItemWorldControl itemWorldControl = transform.GetComponent<ItemWorldControl>();
         //itemWorldControl.SetItemWorld(newItemWorld);
         //itemWorldControl.StartWaitForPickedup();
-        
+
         //AddItemWorld(newItemWorld);
     }
     

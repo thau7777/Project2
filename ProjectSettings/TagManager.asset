@@ -44,6 +44,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: UnderWater
+    uniqueID: 843848987
+    locked: 0
+  - name: Sand
+    uniqueID: 1612801313
+    locked: 0
+  - name: WaterShadow
+    uniqueID: 3379267921
+    locked: 0
+  - name: Water
+    uniqueID: 4269164497
+    locked: 0
   - name: Ground
     uniqueID: 3273337507
     locked: 0
@@ -74,11 +86,11 @@ TagManager:
   - name: Decor
     uniqueID: 1195580027
     locked: 0
-  - name: Leaf
-    uniqueID: 1716526539
-    locked: 0
   - name: Player
     uniqueID: 1449220059
+    locked: 0
+  - name: Leaf
+    uniqueID: 1716526539
     locked: 0
   - name: Rimlit
     uniqueID: 2996297867

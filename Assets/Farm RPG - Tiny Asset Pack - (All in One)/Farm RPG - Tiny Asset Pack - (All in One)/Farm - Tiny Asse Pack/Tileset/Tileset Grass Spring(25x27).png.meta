@@ -11009,7 +11009,11 @@ TextureImporter:
     indices: 
     edges: []
     weights: []
-    secondaryTextures: []
+    secondaryTextures:
+    - texture: {fileID: 2800000, guid: d2692ee9daf274e48a134c90cb94cbb4, type: 3}
+      name: _NormalMap
+    - texture: {fileID: 2800000, guid: 942ce04a0628086489c506803072e8e2, type: 3}
+      name: _MaskTex
     nameFileIdTable:
       Tileset Grass Spring_0: -210740689
       Tileset Grass Spring_1: 308754314
