@@ -100,12 +100,14 @@ public class ItemWorldControl : NetworkBehaviour
     {
         if (collision.CompareTag("Player") && CanPickup.Value)
         {
-            if (InventoryManager.Instance.AddItemToInventory(_itemWorld))
-            {
-                if(IsServer)
-                RequestToDestroyObjectServerRpc(GetComponent<NetworkObject>());
-            }
+            collision.GetComponent<InventoryController>().AddItemWorldToInventory(this);
         }
+    }
+
+    public void DestroyItemWorld()
+    {
+        if (IsServer)
+            RequestToDestroyObjectServerRpc(GetComponent<NetworkObject>());
     }
 
     [ServerRpc(RequireOwnership = false)]

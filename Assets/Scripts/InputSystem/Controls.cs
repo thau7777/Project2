@@ -89,6 +89,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""OpenInventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""8303165d-cfe6-43d1-8a25-7e208d9d783e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -322,6 +331,56 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""action"": ""ChangeInventorySlotByMouseWheel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fec8150c-090e-4db8-ab26-de58267447f9"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""FirstScheme"",
+                    ""action"": ""OpenInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""UI"",
+            ""id"": ""aa149946-622e-4685-90fc-fbe36f9142b9"",
+            ""actions"": [
+                {
+                    ""name"": ""CloseInventory"",
+                    ""type"": ""Button"",
+                    ""id"": ""29dbfbaa-636b-459f-9f12-e40c989c8c54"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""2f017f38-470f-4f10-8d13-7eccf5ae4b6a"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""FirstScheme"",
+                    ""action"": ""CloseInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dcf8a0b9-9086-4155-b72c-b5827a6d304a"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""FirstScheme"",
+                    ""action"": ""CloseInventory"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -343,6 +402,10 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Player_SecondInteract = m_Player.FindAction("SecondInteract", throwIfNotFound: true);
         m_Player_ChangeInventorySlotByButton = m_Player.FindAction("ChangeInventorySlotByButton", throwIfNotFound: true);
         m_Player_ChangeInventorySlotByMouseWheel = m_Player.FindAction("ChangeInventorySlotByMouseWheel", throwIfNotFound: true);
+        m_Player_OpenInventory = m_Player.FindAction("OpenInventory", throwIfNotFound: true);
+        // UI
+        m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
+        m_UI_CloseInventory = m_UI.FindAction("CloseInventory", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -411,6 +474,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_SecondInteract;
     private readonly InputAction m_Player_ChangeInventorySlotByButton;
     private readonly InputAction m_Player_ChangeInventorySlotByMouseWheel;
+    private readonly InputAction m_Player_OpenInventory;
     public struct PlayerActions
     {
         private @Controls m_Wrapper;
@@ -422,6 +486,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         public InputAction @SecondInteract => m_Wrapper.m_Player_SecondInteract;
         public InputAction @ChangeInventorySlotByButton => m_Wrapper.m_Player_ChangeInventorySlotByButton;
         public InputAction @ChangeInventorySlotByMouseWheel => m_Wrapper.m_Player_ChangeInventorySlotByMouseWheel;
+        public InputAction @OpenInventory => m_Wrapper.m_Player_OpenInventory;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -452,6 +517,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @ChangeInventorySlotByMouseWheel.started += instance.OnChangeInventorySlotByMouseWheel;
             @ChangeInventorySlotByMouseWheel.performed += instance.OnChangeInventorySlotByMouseWheel;
             @ChangeInventorySlotByMouseWheel.canceled += instance.OnChangeInventorySlotByMouseWheel;
+            @OpenInventory.started += instance.OnOpenInventory;
+            @OpenInventory.performed += instance.OnOpenInventory;
+            @OpenInventory.canceled += instance.OnOpenInventory;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -477,6 +545,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @ChangeInventorySlotByMouseWheel.started -= instance.OnChangeInventorySlotByMouseWheel;
             @ChangeInventorySlotByMouseWheel.performed -= instance.OnChangeInventorySlotByMouseWheel;
             @ChangeInventorySlotByMouseWheel.canceled -= instance.OnChangeInventorySlotByMouseWheel;
+            @OpenInventory.started -= instance.OnOpenInventory;
+            @OpenInventory.performed -= instance.OnOpenInventory;
+            @OpenInventory.canceled -= instance.OnOpenInventory;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -494,6 +565,52 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // UI
+    private readonly InputActionMap m_UI;
+    private List<IUIActions> m_UIActionsCallbackInterfaces = new List<IUIActions>();
+    private readonly InputAction m_UI_CloseInventory;
+    public struct UIActions
+    {
+        private @Controls m_Wrapper;
+        public UIActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @CloseInventory => m_Wrapper.m_UI_CloseInventory;
+        public InputActionMap Get() { return m_Wrapper.m_UI; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(UIActions set) { return set.Get(); }
+        public void AddCallbacks(IUIActions instance)
+        {
+            if (instance == null || m_Wrapper.m_UIActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_UIActionsCallbackInterfaces.Add(instance);
+            @CloseInventory.started += instance.OnCloseInventory;
+            @CloseInventory.performed += instance.OnCloseInventory;
+            @CloseInventory.canceled += instance.OnCloseInventory;
+        }
+
+        private void UnregisterCallbacks(IUIActions instance)
+        {
+            @CloseInventory.started -= instance.OnCloseInventory;
+            @CloseInventory.performed -= instance.OnCloseInventory;
+            @CloseInventory.canceled -= instance.OnCloseInventory;
+        }
+
+        public void RemoveCallbacks(IUIActions instance)
+        {
+            if (m_Wrapper.m_UIActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IUIActions instance)
+        {
+            foreach (var item in m_Wrapper.m_UIActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_UIActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public UIActions @UI => new UIActions(this);
     private int m_FirstSchemeSchemeIndex = -1;
     public InputControlScheme FirstSchemeScheme
     {
@@ -512,5 +629,10 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         void OnSecondInteract(InputAction.CallbackContext context);
         void OnChangeInventorySlotByButton(InputAction.CallbackContext context);
         void OnChangeInventorySlotByMouseWheel(InputAction.CallbackContext context);
+        void OnOpenInventory(InputAction.CallbackContext context);
+    }
+    public interface IUIActions
+    {
+        void OnCloseInventory(InputAction.CallbackContext context);
     }
 }

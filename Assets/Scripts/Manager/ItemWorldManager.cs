@@ -21,7 +21,7 @@ public class ItemWorldManager : Singleton<ItemWorldManager>, IDataPersistence
                 GameObject itemGO = Instantiate(itemDropPrefab, item.Position, Quaternion.identity);
                 ItemWorldControl itemWorldControl = itemGO.GetComponent<ItemWorldControl>();
                 itemWorldControl.InitialItemWorld(item);
-            }
+            } 
         }
     }
 

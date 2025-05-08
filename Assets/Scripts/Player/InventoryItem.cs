@@ -68,6 +68,12 @@ public class InventoryItem : IItemHolder
         if (_quantity < 0) _quantity = 0;
     }
 
+    public void SetQuantity(int amount)
+    {
+        _quantity = amount;
+        if (_quantity < 0) _quantity = 0;
+    }
+
     public void UpdateSlotIndex(int newIndex)
     {
         _slotIndex = newIndex;

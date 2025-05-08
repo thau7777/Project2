@@ -93,6 +93,7 @@ MonoBehaviour:
   selectedColor: {fileID: -1650873340, guid: e66ab94511260ff40a36a7023990dbf1, type: 3}
   notSelectedColor: {fileID: 1848222215, guid: e66ab94511260ff40a36a7023990dbf1, type: 3}
   slotIndex: 0
+  _inventoryManagerSO: {fileID: 11400000, guid: 80487e6faf0fa794284f8125827666cd, type: 2}
 --- !u!114 &6101414255195925863
 MonoBehaviour:
   m_ObjectHideFlags: 0
