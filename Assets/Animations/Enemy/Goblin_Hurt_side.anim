@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Goblin_Bomb_Side
+  m_Name: Goblin_Hurt_side
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,13 +21,13 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 468382255, guid: 058e0aac360da054ca07f7230973577b, type: 3}
+      value: {fileID: 635443718, guid: 952c99470306caf4c96308c3deaf552a, type: 3}
     - time: 0.1
-      value: {fileID: 1572965963, guid: 058e0aac360da054ca07f7230973577b, type: 3}
+      value: {fileID: 1991966937, guid: 952c99470306caf4c96308c3deaf552a, type: 3}
     - time: 0.2
-      value: {fileID: -1524085446, guid: 058e0aac360da054ca07f7230973577b, type: 3}
+      value: {fileID: -1817757908, guid: 952c99470306caf4c96308c3deaf552a, type: 3}
     - time: 0.3
-      value: {fileID: 903063597, guid: 058e0aac360da054ca07f7230973577b, type: 3}
+      value: {fileID: 1267379304, guid: 952c99470306caf4c96308c3deaf552a, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -50,10 +50,10 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: 468382255, guid: 058e0aac360da054ca07f7230973577b, type: 3}
-    - {fileID: 1572965963, guid: 058e0aac360da054ca07f7230973577b, type: 3}
-    - {fileID: -1524085446, guid: 058e0aac360da054ca07f7230973577b, type: 3}
-    - {fileID: 903063597, guid: 058e0aac360da054ca07f7230973577b, type: 3}
+    - {fileID: 635443718, guid: 952c99470306caf4c96308c3deaf552a, type: 3}
+    - {fileID: 1991966937, guid: 952c99470306caf4c96308c3deaf552a, type: 3}
+    - {fileID: -1817757908, guid: 952c99470306caf4c96308c3deaf552a, type: 3}
+    - {fileID: 1267379304, guid: 952c99470306caf4c96308c3deaf552a, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
