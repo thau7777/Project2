@@ -17,6 +17,7 @@ public class GameEvent : ScriptableObject
     {
         listeners.Remove(listener);
     }
+
     public void Raise(Component sender, object data)
     {
         for (int i = listeners.Count - 1; i >= 0; i--)

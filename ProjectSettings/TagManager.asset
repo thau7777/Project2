@@ -7,6 +7,7 @@ TagManager:
   - Bicycle
   - Horse
   - Bed
+  - House
   layers:
   - Default
   - TransparentFX
@@ -97,6 +98,9 @@ TagManager:
     locked: 0
   - name: TargetedTile
     uniqueID: 4154933181
+    locked: 0
+  - name: Effect
+    uniqueID: 3751552577
     locked: 0
   - name: UI
     uniqueID: 2693888133

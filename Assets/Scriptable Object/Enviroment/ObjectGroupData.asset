@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ad57f98a9375ed49927c556e08c5f83, type: 3}
-  m_Name: Map Group Data
+  m_Script: {fileID: 11500000, guid: 8f8ed298a726802468ba2e69241d0674, type: 3}
+  m_Name: ObjectGroupData
   m_EditorClassIdentifier: 
-  layers: []
+  objectLoaders: []
