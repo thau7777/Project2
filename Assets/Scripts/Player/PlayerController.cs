@@ -7,7 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : NetworkBehaviour, IDataPersistence
+public class PlayerController : NetworkBehaviour
 {
     //private Inventory inventory;
     [SerializeField] private InputReader _inputReader;
@@ -218,52 +218,74 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
         private set { _hadTarget = value; }
     }
 
-    private int selectedSlot = 0; 
     [SerializeField]
     private ItemOnHand _itemOnHand;
     [SerializeField]
     private CinemachineVirtualCamera virtualCamera;
-   
+
+    [SerializeField] private InventoryController _inventoryController;
+    [SerializeField] private InventoryManagerSO _inventoryManagerSO;
+
+
+    //Game Event
+    [SerializeField] private GameEvent onPlayerLoad;
+    [SerializeField] private GameEvent onPlayerSave;
+
+    private void Awake()
+    {
+        _inventoryController = GetComponent<InventoryController>();
+        rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        col = GetComponent<Collider2D>();
+
+    }
     private void OnEnable()
     {
-        _inputReader.moveEvent += OnMove;
-        _inputReader.attackEvent += OnAttack;
-        _inputReader.interactEvent += OnInteract;
-        _inputReader.secondInteractEvent += OnSecondInteract;
-        _inputReader.runEvent += OnRun;
-        _inputReader.changeInventorySlotEvent += GetInputValueToChangeSlot;
+        _inputReader.playerActions.moveEvent += OnMove;
+        _inputReader.playerActions.attackEvent += OnAttack;
+        _inputReader.playerActions.interactEvent += OnInteract;
+        _inputReader.playerActions.secondInteractEvent += OnSecondInteract;
+        _inputReader.playerActions.runEvent += OnRun;
+        _inventoryManagerSO.onChangedSelectedSlot += CheckAnimation;
     }
 
     private void OnDisable()
     {
-        _inputReader.moveEvent -= OnMove;
-        _inputReader.attackEvent -= OnAttack;
-        _inputReader.interactEvent -= OnInteract;
-        _inputReader.secondInteractEvent -= OnSecondInteract;
-        _inputReader.runEvent -= OnRun;
-        _inputReader.changeInventorySlotEvent -= GetInputValueToChangeSlot;
+        _inputReader.playerActions.moveEvent -= OnMove;
+        _inputReader.playerActions.attackEvent -= OnAttack;
+        _inputReader.playerActions.interactEvent -= OnInteract;
+        _inputReader.playerActions.secondInteractEvent -= OnSecondInteract;
+        _inputReader.playerActions.runEvent -= OnRun;
+        _inventoryManagerSO.onChangedSelectedSlot -= CheckAnimation;
     }
 
     private void Start()
     {
 
-        rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-        col = GetComponent<Collider2D>();
-
+        
         if (!IsOwner) enabled = false;
         else
         {
             virtualCamera = GameObject.Find("Virtual Camera").GetComponent<CinemachineVirtualCamera>();
             virtualCamera.Follow = transform;
         }
-        
     }
 
-    void Update()
+    public override void OnNetworkSpawn()
     {
-        CheckAnimation();
+        base.OnNetworkSpawn();
+        onPlayerLoad.Raise(this, null);
     }
+
+    public override void OnNetworkDespawn()
+    {
+        base.OnNetworkDespawn();
+        onPlayerSave.Raise(this, null);
+    }
+    //void Update()
+    //{
+    //    CheckAnimation();
+    //}
 
     private void FixedUpdate()
     {
@@ -441,73 +463,17 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
         CanAttack = true;
     }
     // =================== Item ======================
-    public void PickupItem(ItemWorld item)
-    {
-        bool result = InventoryManager.Instance.AddItemToInventory(item);
-        if (result == true)
-        {
-            Debug.Log("Item added");
-            IsHoldingItem = true;
-        }
-        else
-        {
-            Debug.Log("Item not added");
-        }
-    }
-
-    public Item GetSelectedItem()
-    {
-        Item receivedItem = InventoryManager.Instance.GetSelectedItem(selectedSlot,false);
-        if (receivedItem != null)
-        {
-            return receivedItem;
-        }
-
-        return null;
-    }
-
-    public void UseSelectedItem()
-    {
-        Item receivedItem = InventoryManager.Instance.GetSelectedItem(selectedSlot, true);
-        if (receivedItem != null)
-        {
-            Debug.Log("Used item: " + receivedItem);
-        }
-        else
-        {
-            Debug.Log("Not item used");
-        }
-    }
+    
+ 
 
     // ===================== Animation =====================
 
-    private void GetInputValueToChangeSlot(int value, bool isKeyboard)
-    {
-
-        if (isKeyboard)
-        {
-            if (value != selectedSlot)
-            {
-                InventoryManager.Instance.ChangeSelectedSlot(selectedSlot, value);
-                selectedSlot = value;
-            }
-            //object data = new object({selectedSlot,value});
-            // onChangeSelectedSlot.Raise(this,data);
-        }
-        else
-        {
-            int newValue = selectedSlot + value;
-            if (newValue > 8) newValue = 0;
-            else if(newValue < 0) newValue = 8;
-            InventoryManager.Instance.ChangeSelectedSlot(selectedSlot, newValue);
-            selectedSlot = newValue;
-        }
-    }
+    
     public void CheckAnimation()
     {
         if (!CanAttack || IsRidingVehicle) return;
+        Item item = _inventoryManagerSO.GetCurrentItem();
         _itemOnHand.gameObject.SetActive(false);
-        Item item = GetSelectedItem();
         if (item != null)
         {
             IsHoldingItem = true;
@@ -563,7 +529,8 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
 
     private void UseCurrentItem()
     {
-        Item item = InventoryManager.Instance.GetSelectedItem(selectedSlot, false);
+        Item item = _inventoryManagerSO.GetCurrentItem();
+        Debug.Log(item.name);
         switch (item.type)
         {
             default:
@@ -605,15 +572,17 @@ public class PlayerController : NetworkBehaviour, IDataPersistence
         }
     }
     // Load & Save
-    public void LoadData(GameData gameData)
+    public void StartToLoad(GameData gameData)
     {
         player = gameData.PlayerData;
         transform.position = player.Position;
+        _inventoryController.StartToLoad(gameData);
     }
 
-    public void SaveData(ref GameData gameData)
+    public void StartToSave(ref GameData gameData)
     {
         player.SetPosition(transform.position);
         gameData.SetPlayerData(player);
+        _inventoryController.StartToSave(ref gameData);
     }
 }

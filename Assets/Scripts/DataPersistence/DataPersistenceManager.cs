@@ -96,6 +96,18 @@ public class DataPersistenceManager : Singleton<DataPersistenceManager>
         return new List<IDataPersistence>(dataPersistenceObjects);
     }
 
+    public void OnPlayerLoad(Component sender, object data)
+    {
+        PlayerController player = sender.GetComponent<PlayerController>();
+        player.StartToLoad(gameData);
+    }
+
+    public void OnPlayerSave(Component sender, object data)
+    {
+        PlayerController player = sender.GetComponent<PlayerController>();
+        player.StartToSave(ref gameData);
+    }
+
     //private void CaptureScreenshot()
     //{
     //    string screenshotPath = Path.Combine(Application.persistentDataPath, fileName + "_screenshot.png");

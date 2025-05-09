@@ -7,20 +7,23 @@ public class CraftingSystemManager : Singleton<CraftingSystemManager>
     public List<GameObject> listOutputSlot;
     public GameObject outputSlot;
     public List<Recipe> recipes;
-    public GameObject itemDropPrefab;
+    public GameObject ui_itemPrefab;
 
     private UI_InventoryItem[,] grid = new UI_InventoryItem[3, 3];
 
+    [SerializeField] private InventoryManagerSO _inventoryManagerSO;
     private void OnEnable()
     {
         UI_InventoryItem.OnCraftingSlotAdded += AddItemToGrid;
-        UI_InventoryItem.ItemOnDrag += RemoveItemToGrid;
+        UI_InventoryItem.OnItemInCraftingSlotDrag += RemoveItemFromGrid;
+        UI_InventoryItem.OnNewItemCreatedBeginDrag += TakeOffItem;
     }
 
     private void OnDisable()
     {
         UI_InventoryItem.OnCraftingSlotAdded -= AddItemToGrid;
-        UI_InventoryItem.ItemOnDrag -= RemoveItemToGrid;
+        UI_InventoryItem.OnItemInCraftingSlotDrag -= RemoveItemFromGrid;
+        UI_InventoryItem.OnNewItemCreatedBeginDrag -= TakeOffItem;
     }
 
     public void AddItemToGrid(int i, int j, UI_InventoryItem item)
@@ -29,11 +32,12 @@ public class CraftingSystemManager : Singleton<CraftingSystemManager>
         CheckRecipe();
     }
 
-    public void RemoveItemToGrid(int i, int j, Item item)
+    public void RemoveItemFromGrid(int i, int j, Item item)
     {
         grid[i, j] = null;
         UI_InventoryItem uI_InventoryItem = outputSlot.GetComponentInChildren<UI_InventoryItem>();
         if (uI_InventoryItem != null) Destroy(uI_InventoryItem.gameObject);
+        CheckRecipe();
     }
 
     public void CheckRecipe()
@@ -80,7 +84,7 @@ public class CraftingSystemManager : Singleton<CraftingSystemManager>
 
         UI_InventorySlot slot = outputSlot.GetComponent<UI_InventorySlot>();
         InventoryItem inventoryItem = new InventoryItem(System.Guid.NewGuid().ToString(), item, slot.slotIndex);
-        GameObject newItem = Instantiate(itemDropPrefab, outputSlot.transform);
+        GameObject newItem = Instantiate(ui_itemPrefab, outputSlot.transform);
         UI_InventoryItem inventoryItemUI = newItem.GetComponent<UI_InventoryItem>();
         inventoryItemUI.InitialiseItem(inventoryItem);
         inventoryItemUI.IsItemCreated(true);
@@ -101,13 +105,14 @@ public class CraftingSystemManager : Singleton<CraftingSystemManager>
                     }
                     else if (grid[i, j].InventoryItem.Quantity == 1)
                     {
-                        InventoryManager.Instance.RemoveItemById(grid[i, j].InventoryItem);
+                        _inventoryManagerSO.RemoveItemById(grid[i, j].InventoryItem);
                         Destroy(grid[i, j].gameObject);
                     }
                 }
                 else continue;
             }
         }
+        CheckRecipe();
     }
 
     public void SetNumCraftingTable(int num)

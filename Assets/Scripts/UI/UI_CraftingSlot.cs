@@ -4,46 +4,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class UI_CraftingSlot : MonoBehaviour, IDropHandler
+public class UI_CraftingSlot : MonoBehaviour, IDropHandler,  IPointerDownHandler
 {
     public int i, j;
 
-    public void OnDrop(PointerEventData eventData)
+    [SerializeField] private InventoryManagerSO _inventoryManagerSO;
+
+    public void OnPointerDown(PointerEventData eventData)
     {
-        UI_InventoryItem draggedItem = eventData.pointerDrag.GetComponent<UI_InventoryItem>();
-
-        if (draggedItem == null) return;
-
-        UI_InventoryItem existingItem = transform.GetComponentInChildren<UI_InventoryItem>();
-
-        if (existingItem != null)
-        {
-            if (existingItem.InventoryItem.Item.itemName == draggedItem.InventoryItem.Item.itemName && 
-                existingItem.InventoryItem.Item.stackable &&
-                existingItem.InventoryItem.Quantity < existingItem.InventoryItem.MaxStack)  
-            {
-                existingItem.InventoryItem.IncreaseQuantity(draggedItem.InventoryItem.Quantity);
-                existingItem.RefreshCount();
-
-                InventoryManager.Instance.RemoveItemById(draggedItem.InventoryItem);
-                Destroy(draggedItem.gameObject);
-                return;
-            }
-            else if (existingItem.InventoryItem.Item.itemName != draggedItem.InventoryItem.Item.itemName)
-            {
-                existingItem.ChangeSlot(draggedItem.parentAfterDrag, draggedItem.InventoryItem.SlotIndex);
-                draggedItem.parentAfterDrag = transform;
-            }
-        }
-        else
-        {
-            draggedItem.parentAfterDrag = transform;
-        }
+        if (eventData.button == PointerEventData.InputButton.Left && _inventoryManagerSO.currentDraggingItem != null)
+            OnItemDropOnInventorySlot(_inventoryManagerSO.currentDraggingItem);
     }
 
+    public void OnDrop(PointerEventData eventData)
+    {
+        if (_inventoryManagerSO.currentDraggingItem != null)
+            OnItemDropOnInventorySlot(_inventoryManagerSO.currentDraggingItem);
+    }
+
+    public void OnItemDropOnInventorySlot(UI_InventoryItem draggedItem)
+    {
+        draggedItem.parentAfterDrag = transform;
+        draggedItem.OnItemFinishDrag();
+    }
     public Item GetItem()
     {
         UI_InventoryItem existingItem = transform.GetComponentInChildren<UI_InventoryItem>();
         return existingItem != null ? existingItem.InventoryItem.Item : null;
     }
+
+
 }

@@ -3,91 +3,61 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
+
+public enum ActionMap
+{
+    Player,
+    UI
+}
 
 [CreateAssetMenu]
-public class InputReader : ScriptableObject, Controls.IPlayerActions
+public class InputReader : ScriptableObject
 {
-    public Action<Vector2> moveEvent;
-    public Action attackEvent;
-    public Action interactEvent;
-    public Action secondInteractEvent;
-    public Action<InputAction.CallbackContext> runEvent;
-
-    public Action<int,bool> changeInventorySlotEvent;
-
     private Controls input;
+    public PlayerActions playerActions;
+    public UIActions uiActions;
+
     private void OnEnable()
     {
-        if(input == null)
+        playerActions = new PlayerActions();
+        uiActions = new UIActions();
+        if (input == null)
         {
             input = new Controls();
-            input.Player.SetCallbacks(this);
+            input.Player.SetCallbacks(playerActions);
         }
         input.Player.Enable();
     }
 
     private void OnDisable()
     {
-        if (input != null) input.Player.Disable();
-    }
-
-    public void OnAttack(InputAction.CallbackContext context)
-    {
-        if (context.phase == InputActionPhase.Started) attackEvent?.Invoke();
-    }
-
-    public void OnInteract(InputAction.CallbackContext context)
-    {
-        if (context.phase == InputActionPhase.Performed) interactEvent?.Invoke();
-    }
-
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        moveEvent?.Invoke(context.ReadValue<Vector2>());
-    }
-
-    public void OnRun(InputAction.CallbackContext context)
-    {
-        runEvent?.Invoke(context);
-
-    }
-
-    public void OnSecondInteract(InputAction.CallbackContext context)
-    {
-        if (context.phase == InputActionPhase.Started) secondInteractEvent?.Invoke();
-    }
-
-
-    public void OnChangeInventorySlotByButton(InputAction.CallbackContext context)
-    {
-        if (context.phase == InputActionPhase.Started && context.control.device is Keyboard)
+        if (input != null)
         {
-            if(int.TryParse(context.control.name, out int inputNumber))
-            changeInventorySlotEvent?.Invoke(inputNumber-1,true);
+            input.Player.Disable();
+            input.UI.Disable();
         }
-        else if (context.phase == InputActionPhase.Started && context.control.device is Gamepad)
+            
+    }
+
+    public void SwitchActionMap(ActionMap map)
+    {
+        if (input == null) return;
+        input.Disable(); // Disable all action maps first
+        input.Player.SetCallbacks(null);
+        input.UI.SetCallbacks(null); // Clear callbacks for all action maps
+        switch (map)
         {
-            if(context.control.name == "Left Shoulder")
-            {
-                changeInventorySlotEvent?.Invoke(-1, false);
-            }
-            if (context.control.name == "Right Shoulder")
-            {
-                changeInventorySlotEvent?.Invoke(1, false);
-            }
+            case ActionMap.Player:
+                input.Player.SetCallbacks(playerActions);
+                input.Player.Enable();
+                break;
+
+            case ActionMap.UI:
+                input.UI.SetCallbacks(uiActions);
+                input.UI.Enable(); 
+                break;
         }
     }
 
-    public void OnChangeInventorySlotByMouseWheel(InputAction.CallbackContext context)
-    {
-        if (context.phase == InputActionPhase.Started)
-        {
-            float scrollValue = context.ReadValue<float>();
-            if (scrollValue > 0)
-                changeInventorySlotEvent?.Invoke(-1, false);
-            else if (scrollValue < 0)
-                changeInventorySlotEvent?.Invoke(1, false);
-        }
-        
-    }
 }

@@ -68,3 +68,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemDropPrefab: {fileID: 1324879070572636304, guid: 758e550aad33f9247bb2707f07dfc14c, type: 3}
   itemsOnMap: []
+  itemWorldInfoKeeper:
+    _id: 
+    _itemName: 
+    _quantity: 0
+    _position: {x: 0, y: 0, z: 0}
+    _isColected: 0
