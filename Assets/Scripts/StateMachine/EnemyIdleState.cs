@@ -2,24 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "EnemyIdleState", menuName = "StateMachine/EnemyIdleState")]
-public class EnemyIdleState : State
+public class EnemyIdleState : IState
 {
-
-    public override void Enter()
+    private readonly EnemyAI _enemyAI;
+    public AnimationClip IdleAnimation;
+    public EnemyIdleState(EnemyAI enemyAI)
     {
-        animator.Play(animClip.name);
+        _enemyAI = enemyAI;
+    }
+    public void Enter()
+    {
+        Debug.Log("Enter Idle State");
     }
 
-    public override void StateUpdate()
+    public void Exit()
     {
+        
+    }
 
-        Debug.Log("Calling Idle State Update");
-        // Check for player detection or other conditions to transition to another state
-        // For example:
-        // if (PlayerDetected())
-        // {
-        //     stateMachine.ChangeState(stateMachine.attackState);
-        // }
+    public void StateFixedUpdate()
+    {
+        
+    }
+
+    public void StateUpdate()
+    {
+        
     }
 }
