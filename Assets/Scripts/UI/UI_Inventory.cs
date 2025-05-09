@@ -145,7 +145,6 @@ public class UI_Inventory : MonoBehaviour
                 return slotUI.transform;
             }
         }
-
             return null;
     }
 
@@ -162,6 +161,4 @@ public class UI_Inventory : MonoBehaviour
         UI_InventorySlot slotUI = inventorySlotsUI[slotIndex];
         AddItemToInventoryUI(newItem, slotUI.slotIndex);
     }
-        
-
 }

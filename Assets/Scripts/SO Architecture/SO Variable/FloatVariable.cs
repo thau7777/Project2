@@ -7,5 +7,4 @@ public class FloatVariable : ScriptableObject
 {
     public float Value;
     public event Action OnValueChanged;
-
 }

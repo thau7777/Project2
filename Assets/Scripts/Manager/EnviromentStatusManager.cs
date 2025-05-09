@@ -11,14 +11,7 @@ public class EnviromentalStatusManager : Singleton<EnviromentalStatusManager>, I
     public EnvironmentalStatus eStarus;
     public UI_EnviromentStatus statusUI;
 
-    public Transform sun; 
-    public Transform moon; 
-    public float orbitRadius = 10f; 
-    public Light2D globalLight;
-    public Gradient gradient;
-
     public static event Action<ESeason> ChangeSeasonEvent;
-
 
     public static event Action<int> OnTimeIncrease;
     public int minutesToIncrease;
@@ -26,41 +19,6 @@ public class EnviromentalStatusManager : Singleton<EnviromentalStatusManager>, I
     private void Start()
     {
         
-    }
-
-    void MoveSunAndMoon()
-    {
-        float timeOfDay = (eStarus.DateTime.Hour * 60f + eStarus.DateTime.Minute) / (24f * 60f);
-
-        float angle = timeOfDay * 360f * Mathf.Deg2Rad;
-
-        sun.position = new Vector3(Mathf.Cos(angle) * orbitRadius, Mathf.Sin(angle) * orbitRadius, 0);
-
-        moon.position = new Vector3(-Mathf.Cos(angle) * orbitRadius, -Mathf.Sin(angle) * orbitRadius, 0);
-    }
-
-    void UpdateSunAndMoonLight()
-    {
-        int hour = eStarus.DateTime.Hour;
-        Light2D sunLight = sun.GetComponent<Light2D>();
-        Light2D moonLight = moon.GetComponent<Light2D>();
-        Light2D sunRLight = sun.GetComponentInChildren<Light2D>();
-        Light2D moonRLight = moon.GetComponentInChildren<Light2D>();
-
-        if (hour >= 6 && hour < 18)
-        {
-            sunLight.gameObject.SetActive(true);
-            sunRLight.enabled = true;
-            moonLight.gameObject.SetActive(false);
-            moonRLight.enabled = false;
-        }
-        else
-        {
-            sunLight.gameObject.SetActive(false);
-            sunRLight.enabled = false;
-            moonLight.gameObject.SetActive(true);
-            moonRLight.enabled = true;
-        }
     }
 
     public bool ChangeSeason()
@@ -99,9 +57,6 @@ public class EnviromentalStatusManager : Singleton<EnviromentalStatusManager>, I
         do
         {
             statusUI.UpdateDateText(eStarus.DateTime);
-            ChangeColorDay();
-            MoveSunAndMoon();
-            UpdateSunAndMoonLight();
             if (ChangeSeason())
             {
                 ChangeSeasonEvent?.Invoke(eStarus.SeasonStatus);
@@ -110,13 +65,6 @@ public class EnviromentalStatusManager : Singleton<EnviromentalStatusManager>, I
             eStarus.IncreaseDate(minutesToIncrease);
             OnTimeIncrease?.Invoke(minutesToIncrease);
         } while (true);
-    }
-
-    public void ChangeColorDay()
-    {
-        float timeOfDay = (eStarus.DateTime.Hour * 60f + eStarus.DateTime.Minute) / (24f * 60f);
-
-        globalLight.color = gradient.Evaluate(timeOfDay);
     }
 
     public void LoadData(GameData gameData)
