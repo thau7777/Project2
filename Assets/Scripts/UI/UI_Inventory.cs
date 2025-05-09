@@ -76,7 +76,6 @@ public class UI_Inventory : MonoBehaviour
     public void ChangeSelectedSlot(Component sender, object data)
     {
         int newValue = (int)data;
-        Debug.Log(newValue);
         inventorySlotsUI[_inventoryManagerSO.selectedSlot].Deselect();
         inventorySlotsUI[newValue].Select();
         _inventoryManagerSO.selectedSlot = newValue;
