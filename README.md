@@ -116,7 +116,7 @@ Core gameplay includes:
     </td>
     <td align="center">
       Character Controller, Save/Load,<br/>
-      UI, Audio, Shop System,<br/>
+      UI, Inventory, Audio, Shop System,<br/>
       NPC AI, Dialogue, Cutscene, Time System
     </td>
     <td align="center">
@@ -131,12 +131,25 @@ Core gameplay includes:
 
 ## 🖼️ Gameplay Preview
 
-<!-- Add your GIFs or screenshots here -->
-
+<p align="center"><b>Farming System</b></p>
 <p align="center">
-  <img src="README_assets/farming.gif" width="48%" />
-  <img src="README_assets/mine.gif" width="48%" />
+  <img src="README_assets/hoe.gif" width="32%" />
+  <img src="README_assets/plant.gif" width="32%" />
+  <img src="README_assets/watering.gif" width="32%" />
 </p>
+<br/>
+<p align="center"><b>Resources Gathering</b></p>
+<p align="center">
+  <img src="README_assets/chop.gif" width="48.5%" />
+  <img src="README_assets/mine.gif" width="48.5%" />
+</p>
+<br/>
+<p align="center"><b>Combat System</b></p>
+<p align="center">
+  <img src="README_assets/combat.gif" width="97%" />
+</p>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
 
