@@ -35,13 +35,13 @@ My work includes:
 - Fishing system
 - Mine exploration with combat and AI behavior
 
-> 🔍 This README focuses on my ability to design and implement interconnected gameplay systems in Unity.
+> 🔍 This README focuses on my ability to design gameplay systems, apply common patterns (Singleton, FSM, event-driven architecture), and optimize performance in Unity.
 
 ---
 
 ## 📅 Development Timeline
 
-- Development period: [Add your timeline]
+- Development period: March 2025 - June 2025
 - Team size: 3 members
 
 The project was developed iteratively, focusing on implementing multiple interconnected gameplay systems within a limited timeframe.
@@ -170,6 +170,16 @@ Core gameplay includes:
 
 * **Movement Mechanics**
   * Bicycle and horse riding
+ 
+* **Event-driven System (Scriptable Events)**
+  * Decoupled communication using ScriptableObject-based event system
+
+* **Performance Optimization**
+  * Object Pooling for frequently spawned objects
+  * Camera-based culling for tiles and objects outside of view
+
+* **AI Architecture**
+  * Finite State Machine (FSM) for enemy behavior
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -238,13 +248,33 @@ Balancing enemy behavior between chasing, losing target, and patrolling required
 
 ## 🧩 Design Approach
 
-This project focuses on **practical gameplay system implementation**, with emphasis on:
+This project focuses on building **reusable and decoupled gameplay systems**, with early exploration of common game architecture patterns.
 
-* Grid-based interaction design
-* FSM-based AI behavior
-* Reusable gameplay systems
+### 📡 System Communication
+* **Scriptable Event System**
+  * Implemented using ScriptableObjects to decouple gameplay systems
+  * Enables flexible communication between farming, interaction, and AI systems
 
-This project represents my foundation in building gameplay systems, which I later improved into more scalable architectures in subsequent projects.
+### 🤖 AI Behavior
+* **Finite State Machine (FSM)**
+  * Used to control enemy behavior (patrol, chase, lose target)
+  * Structured state transitions for predictable and maintainable logic
+
+### ♻️ Performance Optimization
+* **Object Pooling**
+  * Reused objects for resource drops and gameplay elements to reduce instantiation cost
+
+* **Camera-based Culling**
+  * Disabled rendering/logic for tiles and objects outside camera view
+  * Improved performance in large tile-based environments
+
+### 🧱 Core Gameplay Structure
+* **Grid-based Interaction System**
+  * Unified interaction logic reused across farming, mining, and environment systems
+
+---
+
+This project represents my early experience applying **gameplay patterns and optimization techniques** in a real project environment.
 
 ---
 
