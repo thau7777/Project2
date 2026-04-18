@@ -9,7 +9,6 @@
 <h1 align="center">A Farming Simulation Game Developed at VTC Academy</h1>
 
 <p align="center">
-  <a href="YOUR_BUILD_LINK">▶️ Play Game</a> •
   <a href="YOUR_TRAILER_LINK">🎥 Trailer</a>
 </p>
 
