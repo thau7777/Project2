@@ -36,7 +36,10 @@ My work includes:
 - Mine exploration with combat and AI behavior
 
 > 🔍 This README focuses on my ability to design gameplay systems, apply common patterns (Singleton, FSM, event-driven architecture), and optimize performance in Unity.
-
+>
+> ⚠️ Due to overlapping development with other projects, this project was not taken to a fully polished release stage.
+>
+> Instead, it was used as a **focused learning environment** to experiment with gameplay systems, AI behavior, and performance optimization techniques.
 ---
 
 ## 📅 Development Timeline
