@@ -270,17 +270,17 @@ Balancing enemy behavior between chasing, losing target, and patrolling required
 
 This project focuses on building **reusable and decoupled gameplay systems**, with early exploration of common game architecture patterns.
 
-### 📡 System Communication
+### System Communication
 * **Scriptable Event System**
   * Implemented using ScriptableObjects to decouple gameplay systems
   * Enables flexible communication between farming, interaction, and AI systems
 
-### 🤖 AI Behavior
+### AI Behavior
 * **Finite State Machine (FSM)**
   * Used to control enemy behavior (patrol, chase, lose target)
   * Structured state transitions for predictable and maintainable logic
 
-### ♻️ Performance Optimization
+### Performance Optimization
 * **Object Pooling**
   * Reused objects for resource drops and gameplay elements to reduce instantiation cost
 
@@ -288,7 +288,7 @@ This project focuses on building **reusable and decoupled gameplay systems**, wi
   * Disabled rendering/logic for tiles and objects outside camera view
   * Improved performance in large tile-based environments
 
-### 🧱 Core Gameplay Structure
+### Core Gameplay Structure
 * **Grid-based Interaction System**
   * Unified interaction logic reused across farming, mining, and environment systems
 
