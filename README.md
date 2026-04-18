@@ -138,6 +138,11 @@ Core gameplay includes:
   <img src="README_assets/watering.gif" width="32%" />
 </p>
 <br/>
+<p align="center"><b>Animals and Fishing</b></p>
+<p align="center">
+  <img src="README_assets/animal.png" width="48.5%" />
+  <img src="README_assets/fishing.png" width="48.5%" />
+</p>
 <p align="center"><b>Resources Gathering</b></p>
 <p align="center">
   <img src="README_assets/chop.gif" width="48.5%" />
