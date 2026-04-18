@@ -9,7 +9,7 @@
 <h1 align="center">A Farming Simulation Game Developed at VTC Academy</h1>
 
 <p align="center">
-  <a href="YOUR_TRAILER_LINK">🎥 Trailer</a>
+  <a href="https://www.youtube.com/watch?v=Oop8stAIWxA"><img src="https://img.shields.io/badge/Trailer-Video-red" /></a>
 </p>
 
 <p align="center">
