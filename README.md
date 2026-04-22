@@ -194,10 +194,6 @@ Core gameplay includes:
 * **Event-driven System (Scriptable Events)**
   * Decoupled communication using ScriptableObject-based event system
 
-* **Performance Optimization**
-  * Object Pooling for frequently spawned objects
-  * Camera-based culling for tiles and objects outside of view
-
 * **AI Architecture**
   * Finite State Machine (FSM) for enemy behavior
 
@@ -279,14 +275,6 @@ This project focuses on building **reusable and decoupled gameplay systems**, wi
 * **Finite State Machine (FSM)**
   * Used to control enemy behavior (patrol, chase, lose target)
   * Structured state transitions for predictable and maintainable logic
-
-### Performance Optimization
-* **Object Pooling**
-  * Reused objects for resource drops and gameplay elements to reduce instantiation cost
-
-* **Camera-based Culling**
-  * Disabled rendering/logic for tiles and objects outside camera view
-  * Improved performance in large tile-based environments
 
 ### Core Gameplay Structure
 * **Grid-based Interaction System**
